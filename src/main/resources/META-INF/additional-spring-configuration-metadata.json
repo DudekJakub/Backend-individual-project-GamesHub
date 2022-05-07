@@ -1,0 +1,28 @@
+{
+  "properties": [
+    {
+      "name": "admin.mail",
+      "type": "java.lang.String",
+      "description": "Description for admin.mail."
+    },
+    {
+      "name": "admin.name",
+      "type": "java.lang.String",
+      "description": "Description for admin.name."
+    },
+    {
+      "name": "info.app.company.name",
+      "type": "java.lang.String",
+      "description": "Description for info.app.company.name."
+    },
+    {
+      "name": "info.app.company.email",
+      "type": "java.lang.String",
+      "description": "Description for info.app.company.email."
+    },
+    {
+      "name": "info.app.company.phone",
+      "type": "java.lang.String",
+      "description": "Description for info.app.company.phone."
+    }
+  ] }
