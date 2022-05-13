@@ -2,6 +2,7 @@ package com.gameshub.repository;
 
 import com.gameshub.domain.game.Game;
 import com.gameshub.domain.game.rawgGame.detailed.RawgGameDetailedDto;
+import com.gameshub.exceptions.GameNotFoundException;
 import com.gameshub.mapper.game.GameMapper;
 import com.gameshub.rawg.client.RawgClient;
 import org.junit.jupiter.api.Test;
@@ -26,15 +27,28 @@ class GameRepositoryTest {
     private GameMapper gameMapper;
 
     @Test
-    void findById() {
+    void retrieveGamesWhereNameIsLike() {
         //Given
-        Long gameToFindId = 1L;
+        String givenName = "doom";
 
         //When
-        Game game = repository.findById(gameToFindId).orElseThrow();
+        List<Long> resultList = repository.retrieveGamesWhereNameIsLike(givenName);
 
         //Then
-        assertEquals(1L, game.getId());
+        assertEquals(6, resultList.size());
+    }
+
+    @Test
+    void findById() throws GameNotFoundException {
+        //Given
+        Long gameToFindId = 2728L;
+
+        //When
+        Game game = repository.findById(gameToFindId).orElseThrow(GameNotFoundException::new);
+
+        //Then
+        assertEquals(2728L, game.getId());
+        assertEquals("tom-clancys-the-division", game.getName());
     }
 
     @Test
@@ -44,6 +58,7 @@ class GameRepositoryTest {
 
         //Then
         assertTrue(gamesFromDatabase.size() > 0);
+        assertEquals(4508, gamesFromDatabase.size());
     }
 
     @Test
