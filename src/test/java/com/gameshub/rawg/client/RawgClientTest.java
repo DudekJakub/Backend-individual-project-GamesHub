@@ -35,6 +35,12 @@ class RawgClientTest {
 
     private static final String TEST_URI = "https://test.com/";
     private static final String TEST_KEY = "test";
+    private static final String QUERY_PARAMS_FOR_TEST_URI = "&page=1" +
+                                                            "&exclude_additions=true" +
+                                                            "&exclude_parents=false" +
+                                                            "&exclude_game_series=false" +
+                                                            "&metacritic=50,100" +
+                                                            "&stores=1,2,3,5,6,11";
 
     @BeforeEach
     public void setWhenStatement() {
@@ -62,7 +68,7 @@ class RawgClientTest {
                 .results(List.of(gameFromList))
                 .build();
 
-        URI uri = new URI(TEST_URI + "games?key=" + TEST_KEY + "&page=1");
+        URI uri = new URI(TEST_URI + "games?key=" + TEST_KEY + QUERY_PARAMS_FOR_TEST_URI);
 
         when(restTemplate.getForObject(uri, RawgGameListDto.class)).thenReturn(gamesList);
 
