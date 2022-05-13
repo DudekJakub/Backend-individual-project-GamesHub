@@ -1,6 +1,7 @@
 package com.gameshub.repository;
 
 import com.gameshub.domain.user.User;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,13 +13,16 @@ import java.util.Optional;
 @Transactional
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    Optional<User> findByLoginName(String loginName);
-
     Optional<User> findByEmail(String email);
 
-    @Override
-    List<User> findAll();
+    @EntityGraph(value = "graph.User.games")
+    Optional<User> findByLoginName(String loginName);
 
     @Override
-    <S extends User> S save(S entity);
+    @EntityGraph(value = "graph.User.games")
+    Optional<User> findById(Long id);
+
+    @Override
+    @EntityGraph(value = "graph.User.games")
+    List<User> findAll();
 }

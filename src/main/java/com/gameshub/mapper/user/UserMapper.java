@@ -3,13 +3,19 @@ package com.gameshub.mapper.user;
 import com.gameshub.domain.user.User;
 import com.gameshub.domain.user.UserCloseDto;
 import com.gameshub.domain.user.UserOpenDto;
+import com.gameshub.exceptions.UserNotFoundException;
+import com.gameshub.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class UserMapper {
+
+    private final UserRepository repository;
 
     public User mapToUserFromCloseDto(final UserCloseDto userCloseDto) {
         return User.builder()
@@ -29,6 +35,12 @@ public class UserMapper {
                 .firstname(userOpenDto.getFirstname())
                 .lastname(userOpenDto.getLastname())
                 .build();
+    }
+
+    public User mapToUserFromId(final Long userId) throws UserNotFoundException {
+        return repository
+                .findById(userId)
+                .orElseThrow(UserNotFoundException::new);
     }
 
     public UserCloseDto mapToUserCloseDto(final User user) {
