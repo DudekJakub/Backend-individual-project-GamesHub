@@ -39,4 +39,9 @@ public class GlobalHttpErrorHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handlePasswordNotMatchException(PasswordNotMatchException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
     }
+
+    @ExceptionHandler(RawgGameDetailedNotFoundException.class)
+    public ResponseEntity<Object> handleRawgGameDetailedNotFoundException(RawgGameDetailedNotFoundException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
 }
