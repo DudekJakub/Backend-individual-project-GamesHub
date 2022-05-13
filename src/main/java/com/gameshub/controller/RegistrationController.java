@@ -17,7 +17,7 @@ public class RegistrationController {
     private final RegistrationService registrationService;
     private final UserService userService;
 
-    @PostMapping("register")
+    @PostMapping(value = "register")
     public ResponseEntity<String> register(@RequestBody RegistrationRequestDto request) throws UserEmailAlreadyExistsInDatabaseException,
                                                                                                UserLoginNameAlreadyExistsInDatabaseException,
                                                                                                PasswordNotMatchException {
@@ -25,7 +25,7 @@ public class RegistrationController {
     }
 
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
-    @GetMapping("confirm/{loginName}")
+    @GetMapping(value = "confirm/{loginName}")
     public ResponseEntity<String> confirm(@PathVariable String loginName) throws AccessDeniedException, UserNotFoundException, UserAlreadyVerifiedException {
         return ResponseEntity.ok(registrationService.confirmAccount(userService.getUserByLoginName(loginName)));
     }
