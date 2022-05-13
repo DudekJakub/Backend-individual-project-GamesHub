@@ -27,6 +27,11 @@ public class RawgClient {
         return UriComponentsBuilder.fromHttpUrl(rawgConfig.getRawgApiEndpoint() + "games")
                 .queryParam("key", rawgConfig.getRawgAppKey())
                 .queryParam("page", pageNumber)
+                .queryParam("exclude_additions", "true")
+                .queryParam("exclude_parents", "false")
+                .queryParam("exclude_game_series", "false")
+                .queryParam("metacritic", "50,100")
+                .queryParam("stores", "1,2,3,5,6,11")
                 .build()
                 .encode()
                 .toUri();

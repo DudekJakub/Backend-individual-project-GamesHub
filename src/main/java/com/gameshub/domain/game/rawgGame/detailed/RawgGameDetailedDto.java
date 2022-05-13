@@ -25,7 +25,7 @@ public class RawgGameDetailedDto {
 
     @Override
     public String toString() {
-        return "RawgGameDetailedDto{" +
+        return "\n\nRawgGameDetailedDto{" +
                 "\nid=" + id +
                 "\nname='" + name + '\'' +
                 "\ndescription='" + description + '\'' +
