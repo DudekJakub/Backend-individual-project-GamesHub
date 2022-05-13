@@ -11,12 +11,11 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GameOpinionDto {
+public class GameRatingDto {
 
     private Long id;
     private String gameName;
-    private String userLogin;
-    private String opinion;
+    private int rating;
     private final LocalDateTime publicationDate = LocalDateTime.now();
     private Long gameId;
     private Long userId;

@@ -7,6 +7,12 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@NamedNativeQuery(
+        name = "Game.retrieveGamesWhereNameIsLike",
+        query = "SELECT G.ID, G.NAME FROM GAMES G WHERE NAME LIKE CONCAT('%', :NAME, '%')")
+@NamedEntityGraph(
+        name = "graph.Game.gameOpinions",
+        attributeNodes = @NamedAttributeNode("gameOpinions"))
 @Data
 @EqualsAndHashCode
 @Builder
@@ -16,18 +22,19 @@ import java.util.List;
 public class Game {
 
     @Id
+    @EqualsAndHashCode.Include
     @Column(name = "ID", unique = true)
     private Long id;
 
     @NotNull
+    @EqualsAndHashCode.Exclude
     @Column(name = "NAME")
     private String name;
 
-    @OneToMany(
-            targetEntity = GameOpinion.class,
-            mappedBy = "game",
-            cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER
-    )
+    @EqualsAndHashCode.Exclude
+    @OneToMany(targetEntity = GameOpinion.class,
+               mappedBy = "game",
+               cascade = CascadeType.PERSIST,
+               fetch = FetchType.LAZY)
     private final List<GameOpinion> gameOpinions = new ArrayList<>();
 }

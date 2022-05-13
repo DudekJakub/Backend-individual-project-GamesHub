@@ -1,22 +1,19 @@
 package com.gameshub.domain.game;
 
 import com.gameshub.domain.user.User;
-import com.sun.istack.NotNull;
 import lombok.*;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-@NamedEntityGraph(
-        name = "graph.GameOpinion.user",
-        attributeNodes = @NamedAttributeNode("user")
-)
 @Data
 @EqualsAndHashCode
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "GAME_OPINIONS")
-public class GameOpinion {
+@Entity(name = "GAME_RATINGS")
+public class GameRating {
 
     @Id
     @EqualsAndHashCode.Include
@@ -32,13 +29,8 @@ public class GameOpinion {
 
     @NotNull
     @EqualsAndHashCode.Exclude
-    @Column(name = "USER_LOGIN")
-    private String userLogin;
-
-    @NotNull
-    @EqualsAndHashCode.Exclude
-    @Column(name = "OPINION")
-    private String opinion;
+    @Column(name = "RATING")
+    private int rating;
 
     @NotNull
     @EqualsAndHashCode.Exclude
@@ -52,7 +44,7 @@ public class GameOpinion {
             CascadeType.MERGE,
             CascadeType.PERSIST,
             CascadeType.REFRESH
-    }, fetch = FetchType.LAZY)
+    }, fetch = FetchType.EAGER)
     @JoinColumn(name = "GAME_ID")
     private Game game;
 
@@ -63,22 +55,7 @@ public class GameOpinion {
             CascadeType.MERGE,
             CascadeType.PERSIST,
             CascadeType.REFRESH
-    }, fetch = FetchType.LAZY)
+    }, fetch = FetchType.EAGER)
     @JoinColumn(name = "USER_ID")
     private User user;
-
-
-
-    @Override
-    public String toString() {
-        return "\nGameOpinion{" +
-                "\nid=" + id +
-                "\ngameName='" + gameName + '\'' +
-                "\nuserLogin='" + userLogin + '\'' +
-                "\nopinion='" + opinion + '\'' +
-                "\npublicationDate=" + publicationDate +
-                "\ngame=" + game +
-                "\nuser=" + user +
-                '}';
-    }
 }

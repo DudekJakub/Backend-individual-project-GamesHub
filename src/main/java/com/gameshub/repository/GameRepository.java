@@ -1,7 +1,10 @@
 package com.gameshub.repository;
 
 import com.gameshub.domain.game.Game;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
@@ -12,12 +15,13 @@ import java.util.Optional;
 @Transactional
 public interface GameRepository extends JpaRepository<Game, Long> {
 
-    @Override
-    List<Game> findAll();
+    @Query
+    List<Long> retrieveGamesWhereNameIsLike(@Param("NAME") String name);
 
     @Override
+    @EntityGraph(value = "graph.Game.gameOpinions")
     Optional<Game> findById(Long aLong);
 
     @Override
-    <S extends Game> S save(S entity);
+    List<Game> findAll();
 }
