@@ -1,12 +1,16 @@
 package com.gameshub.mapper.game;
 
 import com.gameshub.domain.game.Game;
-import com.gameshub.domain.game.rawgGame.detailed.RawgGameDetailedDto;
-import com.gameshub.domain.game.rawgGame.fromList.RawgGameFromListDto;
-import com.gameshub.exceptions.GameNotFoundException;
+import com.gameshub.domain.game.GameDto;
+import com.gameshub.domain.game.rawgGame.RawgGameDetailedDto;
+import com.gameshub.domain.game.rawgGame.RawgGameFromListDto;
+import com.gameshub.exception.GameNotFoundException;
 import com.gameshub.repository.GameRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,16 +25,25 @@ public class GameMapper {
                 .build();
     }
 
+    public GameDto mapToGameDto(Game game) {
+        return GameDto.builder()
+                .id(game.getId())
+                .name(game.getName())
+                .build();
+    }
+
     public Game mapToGameFromId(Long gameId) throws GameNotFoundException {
         return repository
                 .findById(gameId)
                 .orElseThrow(GameNotFoundException::new);
     }
 
-    public Game mapToGameFromRawgGame(RawgGameFromListDto rawgGameFromListDto) {
-        return Game.builder()
-                .id(rawgGameFromListDto.getId())
-                .name(rawgGameFromListDto.getSlug())
-                .build();
+    public Set<GameDto> mapToGameSetDto(Set<Game> games) {
+        return games.stream()
+                .map(game -> GameDto.builder()
+                        .id(game.getId())
+                        .name(game.getName())
+                        .build())
+                .collect(Collectors.toSet());
     }
 }
