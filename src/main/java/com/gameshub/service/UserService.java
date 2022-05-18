@@ -1,10 +1,13 @@
 package com.gameshub.service;
 
+import com.gameshub.domain.game.Game;
 import com.gameshub.domain.user.AppUserDetails;
+import com.gameshub.domain.user.AppUserNotificationStrategy;
 import com.gameshub.domain.user.User;
-import com.gameshub.exceptions.UserEmailAlreadyExistsInDatabaseException;
-import com.gameshub.exceptions.UserLoginNameAlreadyExistsInDatabaseException;
-import com.gameshub.exceptions.UserNotFoundException;
+import com.gameshub.exception.UserEmailAlreadyExistsInDatabaseException;
+import com.gameshub.exception.UserLoginNameAlreadyExistsInDatabaseException;
+import com.gameshub.exception.UserNotFoundException;
+import com.gameshub.repository.GameRepository;
 import com.gameshub.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +19,8 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,34 +30,22 @@ public class UserService implements UserDetailsService {
     private final BCryptPasswordEncoder passwordEncoder;
 
     @Override
-    public UserDetails loadUserByUsername(String loginName) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(final String loginName) throws UsernameNotFoundException {
         Optional<User> user = userRepository.findByLoginName(loginName);
 
-        user.orElseThrow(() -> new UsernameNotFoundException("Not found: " + loginName));
+        user.orElseThrow(() -> new UsernameNotFoundException("User not found: " + loginName));
 
         return user.map(AppUserDetails::new).get();
     }
 
     @Transactional
-    public void signUpUser(final User user) throws UserLoginNameAlreadyExistsInDatabaseException,
-                                                 UserEmailAlreadyExistsInDatabaseException {
-        boolean loginNameAlreadyExists = userRepository
-                .findByLoginName(user.getLoginName())
-                .isPresent();
-
-        boolean emailAlreadyExists = userRepository
-                .findByEmail(user.getEmail())
-                .isPresent();
-
-        if (loginNameAlreadyExists) throw new UserLoginNameAlreadyExistsInDatabaseException();
-        if (emailAlreadyExists) throw new UserEmailAlreadyExistsInDatabaseException();
-
+    public void signUpUser(final User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setActive(true);
         userRepository.save(user);
     }
 
-    public void saveUser(User user) {
+    public void saveUser(final User user) {
         userRepository.save(user);
     }
 
@@ -60,11 +53,33 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
 
-    public User getUserByLoginName(String loginName) throws UserNotFoundException {
+    public User getUserByLoginName(final String loginName) throws UserNotFoundException {
         return userRepository.findByLoginName(loginName).orElseThrow(UserNotFoundException::new);
     }
 
-    public User getUserById(Long userId) throws UserNotFoundException {
-        return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+    public void setUserNotificationStrategy(final Long userId, final String notificationStrategy) throws UserNotFoundException {
+        User userFromDatabase = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        AppUserNotificationStrategy appUserNotificationStrategy = null;
+
+        switch (notificationStrategy) {
+            case "full" :
+                appUserNotificationStrategy = AppUserNotificationStrategy.FULL_EMAIL_NOTIFICATION;
+                break;
+            case "simple" :
+                appUserNotificationStrategy = AppUserNotificationStrategy.SIMPLE_EMAIL_NOTIFICATION;
+                break;
+            case "app" :
+                appUserNotificationStrategy = AppUserNotificationStrategy.INSIDE_APP_NOTIFICATION;
+                break;
+        }
+
+        userFromDatabase.setNotificationStrategy(appUserNotificationStrategy);
+        saveUser(userFromDatabase);
+    }
+
+    public Set<Game> getUserObservedGames(final Long userId) throws UserNotFoundException {
+        return userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new)
+                .getObservedGames();
     }
 }

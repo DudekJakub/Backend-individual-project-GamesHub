@@ -5,7 +5,8 @@ import com.gameshub.domain.user.RegistrationRequestDto;
 import com.gameshub.domain.user.User;
 import com.gameshub.email.EmailBuilder;
 import com.gameshub.email.EmailService;
-import com.gameshub.exceptions.*;
+import com.gameshub.exception.*;
+import com.gameshub.facade.UserFacade;
 import com.gameshub.mapper.user.AppUserMapper;
 import com.gameshub.validator.AccountConfirmValidator;
 import com.gameshub.validator.EmailValidator;
@@ -19,43 +20,43 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class RegistrationService {
 
-    private static final String EMAIL_WITH_LINK_JUST_SEND = "Email with confirmation request just send!";
+    private static final String EMAIL_WITH_LINK_JUST_SEND = "Email with confirmation request has been sent!";
     private static final String ACCOUNT_VERIFIED = "Account has been verified!";
+    private static final String REGISTER_OPERATION = "[REGISTER OPERATION] ";
+    private static final String CONFIRM_OPERATION = "[CONFIRM OPERATION] ";
 
     private final EmailService emailService;
+    private final UserFacade userFacade;
     private final UserService userService;
+
     private final AccountConfirmValidator confirmValidator;
     private final EmailValidator emailValidator;
     private final PasswordEqualityValidator passwordEqualityValidator;
 
-    public String register(RegistrationRequestDto request) throws UserEmailAlreadyExistsInDatabaseException,
-                                                                  UserLoginNameAlreadyExistsInDatabaseException,
-                                                                  PasswordNotMatchException {
-
+    public String register(final RegistrationRequestDto request) throws UserEmailAlreadyExistsInDatabaseException, UserLoginNameAlreadyExistsInDatabaseException,
+                                                                        PasswordNotMatchException, UserNotFoundException {
         Mail mail = EmailBuilder.createMail(
                 request.getEmail(),
                 "GamesHub - account confirmation",
                 "Welcome to GamesHub! This is confirmation message. Please click button below."
                 );
 
-        passwordEqualityValidator.validate(request.getPassword(), request.getRepeatPassword());
-        if (emailValidator.validate(request.getEmail())) throw new UserEmailAlreadyExistsInDatabaseException();
+        passwordEqualityValidator.validate(request.getPassword(), request.getRepeatPassword(), REGISTER_OPERATION);
+        emailValidator.validateIfEmailAlreadyExistInDatabase(request.getEmail(), REGISTER_OPERATION);
 
-        userService.signUpUser(AppUserMapper.mapToAppUser(request));
+        userFacade.signUpUser(AppUserMapper.mapToAppUser(request));
 
         emailService.sendNewAccConfirmationMail(mail, request.getFirstname(), request.getLoginName());
 
         return EMAIL_WITH_LINK_JUST_SEND;
     }
 
-    public String confirmAccount(final User user) throws AccessDeniedException,
-                                                         UserNotFoundException,
-                                                         UserAlreadyVerifiedException {
-
+    public String confirmAccount(final User user) throws AccessDeniedException, UserNotFoundException,
+                                                         UserAlreadyVerifiedException, UserNotVerifiedException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String login = authentication.getName();
         if (!login.equals(user.getLoginName()) && !login.equalsIgnoreCase("admin")) throw new AccessDeniedException();
-        if (confirmValidator.validate(user)) throw new UserAlreadyVerifiedException();
+        if (confirmValidator.validateByUser(user, CONFIRM_OPERATION)) throw new UserAlreadyVerifiedException();
 
         user.setVerified(true);
         userService.saveUser(user);

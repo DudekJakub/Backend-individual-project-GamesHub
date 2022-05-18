@@ -1,11 +1,8 @@
 package com.gameshub.service;
 
-import com.gameshub.domain.game.Game;
-import com.gameshub.domain.game.rawgGame.detailed.RawgGameDetailedDto;
-import com.gameshub.domain.game.rawgGame.fromList.RawgGameFromListDto;
-import com.gameshub.domain.game.rawgGame.fromList.RawgGameListDto;
-import com.gameshub.exceptions.RawgGameDetailedNotFoundException;
-import com.gameshub.mapper.game.GameMapper;
+import com.gameshub.domain.game.rawgGame.RawgGameDetailedDto;
+import com.gameshub.exception.RawgGameDetailedNotFoundException;
+import com.gameshub.mapper.game.RawgGameNameMapper;
 import com.gameshub.rawg.client.RawgClient;
 import com.gameshub.repository.GameRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,10 +21,9 @@ public class RawgService {
 
     private final RawgClient rawgClient;
     private final GameRepository gameRepository;
-    private final GameMapper gameMapper;
 
-    public List<RawgGameDetailedDto> fetchListOfRawgGamesRelatedToGivenName(String name) {
-        var mappedName = mapNameToRawgsSlugName(name);
+    public List<RawgGameDetailedDto> fetchListOfRawgGamesRelatedToGivenName(final String name) {
+        var mappedName = RawgGameNameMapper.mapGameNameToRawgSlugName(name);
         var listOfGames = gameRepository.retrieveGamesWhereNameIsLike(mappedName);
         var resultList = new ArrayList<RawgGameDetailedDto>();
 
@@ -39,7 +34,7 @@ public class RawgService {
                         .add(rawgClient.getGameById(id)
                                 .orElseThrow(RawgGameDetailedNotFoundException::new));
             } catch (RawgGameDetailedNotFoundException e) {
-                LOGGER.error("Exception occurred when looking for game with id : " + id);
+                LOGGER.error("Exception occurred when looking for game with id: " + id);
                 e.getCause();
             }
         });
@@ -48,20 +43,18 @@ public class RawgService {
         return resultList;
     }
 
-    public RawgGameDetailedDto getRawgGameDetailedById(Long id) {
+    public RawgGameDetailedDto getRawgGameDetailedById(final Long id) {
         RawgGameDetailedDto resultRawgGame = null;
 
         LOGGER.info("Searching for RAWG's game by id...");
         try {
             resultRawgGame = rawgClient.getGameById(id).orElseThrow(RawgGameDetailedNotFoundException::new);
         } catch (RawgGameDetailedNotFoundException e) {
-            LOGGER.error("Exception occurred when looking for game with id : " + id);
+            LOGGER.error("Exception occurred when looking for game with id: " + id);
             e.getCause();
         }
         return resultRawgGame;
     }
 
-    private String mapNameToRawgsSlugName(String name) {
-        return name.replaceAll(" ", "-");
-    }
+
 }
