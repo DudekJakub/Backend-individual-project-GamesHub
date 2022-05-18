@@ -1,4 +1,4 @@
-package com.gameshub.exceptions;
+package com.gameshub.exception;
 
 public class AccessDeniedException extends Exception {
 
