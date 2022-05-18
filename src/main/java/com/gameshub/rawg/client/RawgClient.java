@@ -1,7 +1,7 @@
 package com.gameshub.rawg.client;
 
-import com.gameshub.domain.game.rawgGame.detailed.RawgGameDetailedDto;
-import com.gameshub.domain.game.rawgGame.fromList.RawgGameListDto;
+import com.gameshub.domain.game.rawgGame.RawgGameDetailedDto;
+import com.gameshub.domain.game.rawgGame.RawgGameListDto;
 import com.gameshub.rawg.config.RawgConfig;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
