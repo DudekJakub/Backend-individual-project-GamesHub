@@ -18,7 +18,7 @@ import java.util.*;
                         @NamedAttributeNode("gamesWantedToOwn")
                 })})
 @Data
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,77 +37,51 @@ public class User {
     private String loginName;
 
     @NotNull
-    @EqualsAndHashCode.Exclude
     @Enumerated(value = EnumType.STRING)
     @Column(name = "ROLES")
     private AppUserRole appUserRole;
 
-    @EqualsAndHashCode.Exclude
-    @Column(name = "REGISTERED_DATE")
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "USER_NOTIFICATION_STRATEGY")
+    private AppUserNotificationStrategy notificationStrategy;
+
     private final LocalDateTime registeredDate = LocalDateTime.now();
 
     @NotNull
-    @EqualsAndHashCode.Exclude
-    @Column(name = "EMAIL")
     private String email;
 
-    @NonNull
-    @EqualsAndHashCode.Exclude
-    @Column(name = "FIRSTNAME")
+    @NotNull
     private String firstname;
 
     @NotNull
-    @EqualsAndHashCode.Exclude
-    @Column(name = "LASTNAME")
     private String lastname;
 
-    @EqualsAndHashCode.Exclude
-    @Column(name = "PASSWORD")
     private String password;
 
     @NotNull
-    @EqualsAndHashCode.Exclude
-    @Column(name = "ACTIVE")
     private boolean active;
 
     @NotNull
-    @EqualsAndHashCode.Exclude
-    @Column(name = "VERIFIED")
     private boolean verified;
 
-
-    @EqualsAndHashCode.Exclude
-    @OneToMany(targetEntity = GameOpinion.class,
-               mappedBy = "user",
-               cascade = CascadeType.PERSIST,
-               fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user")
     private final List<GameOpinion> gameOpinions = new ArrayList<>();
 
 
-    @EqualsAndHashCode.Exclude
-    @ManyToMany(targetEntity = Game.class,
-                cascade = { CascadeType.PERSIST,
-                            CascadeType.DETACH,
-                            CascadeType.MERGE,
-                            CascadeType.REFRESH
-                          },
-            fetch = FetchType.LAZY)
+    @ManyToMany(targetEntity = Game.class, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(name = "USERS_HAVE_GAMES",
                joinColumns =        {@JoinColumn(name = "USER_ID", referencedColumnName = "ID")},
                inverseJoinColumns = {@JoinColumn(name = "GAME_ID", referencedColumnName = "ID")})
     private final Set<Game> gamesOwned = new HashSet<>();
 
 
-    @EqualsAndHashCode.Exclude
-    @ManyToMany(targetEntity = Game.class,
-                cascade = { CascadeType.PERSIST,
-                            CascadeType.DETACH,
-                            CascadeType.MERGE,
-                            CascadeType.REFRESH
-                           },
-                fetch = FetchType.LAZY)
+    @ManyToMany(targetEntity = Game.class, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(name = "USERS_WANT_TO_HAVE_GAMES",
                joinColumns =        {@JoinColumn(name = "USER_ID", referencedColumnName = "ID")},
                inverseJoinColumns = {@JoinColumn(name = "GAME_ID", referencedColumnName = "ID")})
     private final Set<Game> gamesWantedToOwn = new HashSet<>();
+
+
+    @ManyToMany(mappedBy = "observers")
+    private final Set<Game> observedGames = new HashSet<>();
 }
