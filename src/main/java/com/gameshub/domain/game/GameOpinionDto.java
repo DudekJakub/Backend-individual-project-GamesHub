@@ -14,10 +14,8 @@ import java.time.LocalDateTime;
 public class GameOpinionDto {
 
     private Long id;
-    private String gameName;
-    private String userLogin;
     private String opinion;
-    private final LocalDateTime publicationDate = LocalDateTime.now();
+    private LocalDateTime publicationDate;
     private Long gameId;
     private Long userId;
 }
