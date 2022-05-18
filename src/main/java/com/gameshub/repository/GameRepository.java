@@ -20,7 +20,7 @@ public interface GameRepository extends JpaRepository<Game, Long> {
 
     @Override
     @EntityGraph(value = "graph.Game.gameOpinions")
-    Optional<Game> findById(Long aLong);
+    Optional<Game> findById(Long id);
 
     @Override
     List<Game> findAll();
