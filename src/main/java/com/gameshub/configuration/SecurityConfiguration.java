@@ -23,6 +23,21 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
     private final BCryptPasswordEncoder passwordEncoder;
 
+    private static final String[] AUTH_WHITELIST = {
+            "/v1/registration/register",
+            "/swagger-ui.html",
+            "/swagger-ui/**",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/v2/api-docs",
+            "/v1/",
+            "/**",
+            "/js/**",
+            "/css/**",
+            "/img/**",
+            "/webjars/**"
+    };
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
@@ -34,9 +49,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
+                .anonymous().authorities("ROLE_ANONYMOUS")
+                .and()
+                .httpBasic().disable()
                 .authorizeRequests()
-                .antMatchers("/v1/registration/register").permitAll()
-                .antMatchers("/swagger-ui.html").permitAll()
+                .antMatchers(AUTH_WHITELIST).permitAll()
                 .antMatchers("/v1/admin").hasRole("ADMIN")
                 .antMatchers("/v1/").permitAll()
                 .anyRequest().authenticated()
