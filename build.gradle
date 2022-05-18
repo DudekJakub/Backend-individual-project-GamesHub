@@ -33,12 +33,15 @@ dependencies {
 	//SPRING_CONFIGURATION_PROCESSOR
 	implementation 'org.springframework.boot:spring-boot-configuration-processor'
 
-	//JSON-MAPPER
+	//JSON_MAPPER
     implementation 'com.google.code.gson:gson'
 
     //SWAGGER
     implementation('io.springfox:springfox-swagger2:2.9.2')
     implementation('io.springfox:springfox-swagger-ui:2.9.2')
+
+    //LANGUAGE_TRANSLATION
+    implementation 'com.google.cloud:google-cloud-translate:2.1.13'
 
     //MAIL-SERVICE
     implementation 'org.springframework.boot:spring-boot-starter-mail'
@@ -46,8 +49,8 @@ dependencies {
     //THYMELEAF
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
-    //N+1 HIBERNATE DETECTOR
-    implementation 'com.yannbriancon:spring-hibernate-query-utils:2.0.0'
+//     //N+1 HIBERNATE DETECTOR
+//     implementation 'com.yannbriancon:spring-hibernate-query-utils:2.0.0'
 
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'mysql:mysql-connector-java'
