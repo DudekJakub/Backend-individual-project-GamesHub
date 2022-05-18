@@ -3,12 +3,13 @@ package com.gameshub.mapper.user;
 import com.gameshub.domain.user.User;
 import com.gameshub.domain.user.UserCloseDto;
 import com.gameshub.domain.user.UserOpenDto;
-import com.gameshub.exceptions.UserNotFoundException;
+import com.gameshub.exception.UserNotFoundException;
 import com.gameshub.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -76,6 +77,12 @@ public class UserMapper {
         return users.stream()
                 .map(this::mapToUserOpenDto)
                 .collect(Collectors.toList());
+    }
+
+    public Set<UserOpenDto> mapToUserOpenDtoSet(final Set<User> users) {
+        return users.stream()
+                .map(this::mapToUserOpenDto)
+                .collect(Collectors.toSet());
     }
 
     public List<User> mapToUserListFromCloseDto(final List<UserCloseDto> userCloseDtos) {
