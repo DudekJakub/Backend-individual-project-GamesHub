@@ -5,8 +5,8 @@ import com.gameshub.domain.game.GameOpinion;
 import com.gameshub.domain.game.GameOpinionDto;
 import com.gameshub.domain.user.AppUserRole;
 import com.gameshub.domain.user.User;
-import com.gameshub.exceptions.GameNotFoundException;
-import com.gameshub.exceptions.UserNotFoundException;
+import com.gameshub.exception.GameNotFoundException;
+import com.gameshub.exception.UserNotFoundException;
 import com.gameshub.mapper.user.UserMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,8 +16,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -70,8 +68,6 @@ class GameOpinionMapperTestWithMockito {
         //Given
         GameOpinionDto gameOpinionDto = GameOpinionDto.builder()
                 .id(1L)
-                .gameName("destiny-2")
-                .userLogin("admin")
                 .opinion("Test_opinion")
                 .gameId(32L)
                 .userId(5L)
@@ -112,8 +108,6 @@ class GameOpinionMapperTestWithMockito {
         //Then
         assertNotNull(mappedResult);
         assertNotNull(mappedResult.getPublicationDate());
-        assertEquals("destiny-2", mappedResult.getGameName());
-        assertEquals("admin", mappedResult.getUserLogin());
         assertEquals("test_opinion", mappedResult.getOpinion());
         assertEquals(32L, mappedResult.getGameId());
         assertEquals(5L, mappedResult.getUserId());

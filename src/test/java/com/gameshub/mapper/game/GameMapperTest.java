@@ -1,7 +1,7 @@
 package com.gameshub.mapper.game;
 
 import com.gameshub.domain.game.Game;
-import com.gameshub.domain.game.rawgGame.detailed.RawgGameDetailedDto;
+import com.gameshub.domain.game.rawgGame.RawgGameDetailedDto;
 import com.gameshub.rawg.client.RawgClient;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,7 +2,7 @@ package com.gameshub.repository;
 
 import com.gameshub.domain.user.AppUserRole;
 import com.gameshub.domain.user.User;
-import com.gameshub.exceptions.UserNotFoundException;
+import com.gameshub.exception.UserNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

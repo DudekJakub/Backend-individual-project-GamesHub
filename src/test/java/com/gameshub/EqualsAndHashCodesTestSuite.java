@@ -2,8 +2,8 @@ package com.gameshub;
 
 import com.gameshub.domain.game.Game;
 import com.gameshub.domain.user.User;
-import com.gameshub.exceptions.GameNotFoundException;
-import com.gameshub.exceptions.UserNotFoundException;
+import com.gameshub.exception.GameNotFoundException;
+import com.gameshub.exception.UserNotFoundException;
 import com.gameshub.repository.GameRepository;
 import com.gameshub.repository.UserRepository;
 import org.junit.jupiter.api.Test;

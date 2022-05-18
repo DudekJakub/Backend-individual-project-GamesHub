@@ -1,8 +1,8 @@
 package com.gameshub.rawg.client;
 
-import com.gameshub.domain.game.rawgGame.detailed.RawgGameDetailedDto;
-import com.gameshub.domain.game.rawgGame.fromList.RawgGameFromListDto;
-import com.gameshub.domain.game.rawgGame.fromList.RawgGameListDto;
+import com.gameshub.domain.game.rawgGame.RawgGameDetailedDto;
+import com.gameshub.domain.game.rawgGame.RawgGameFromListDto;
+import com.gameshub.domain.game.rawgGame.RawgGameListDto;
 import com.gameshub.rawg.config.RawgConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

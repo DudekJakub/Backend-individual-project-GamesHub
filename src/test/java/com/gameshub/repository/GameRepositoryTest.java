@@ -1,8 +1,8 @@
 package com.gameshub.repository;
 
 import com.gameshub.domain.game.Game;
-import com.gameshub.domain.game.rawgGame.detailed.RawgGameDetailedDto;
-import com.gameshub.exceptions.GameNotFoundException;
+import com.gameshub.domain.game.rawgGame.RawgGameDetailedDto;
+import com.gameshub.exception.GameNotFoundException;
 import com.gameshub.mapper.game.GameMapper;
 import com.gameshub.rawg.client.RawgClient;
 import org.junit.jupiter.api.Test;

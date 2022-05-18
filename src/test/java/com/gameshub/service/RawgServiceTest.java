@@ -1,8 +1,6 @@
 package com.gameshub.service;
 
-import com.gameshub.domain.game.rawgGame.detailed.RawgGameDetailedDto;
-import com.gameshub.domain.game.rawgGame.fromList.RawgGameFromListDto;
-import com.gameshub.rawg.client.RawgClient;
+import com.gameshub.domain.game.rawgGame.RawgGameDetailedDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

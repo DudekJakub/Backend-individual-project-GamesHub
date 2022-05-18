@@ -5,8 +5,8 @@ import com.gameshub.domain.game.GameRating;
 import com.gameshub.domain.game.GameRatingDto;
 import com.gameshub.domain.user.AppUserRole;
 import com.gameshub.domain.user.User;
-import com.gameshub.exceptions.GameNotFoundException;
-import com.gameshub.exceptions.UserNotFoundException;
+import com.gameshub.exception.GameNotFoundException;
+import com.gameshub.exception.UserNotFoundException;
 import com.gameshub.mapper.user.UserMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,8 +16,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.time.LocalDateTime;
 
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
