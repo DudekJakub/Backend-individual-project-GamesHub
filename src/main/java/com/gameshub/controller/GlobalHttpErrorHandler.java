@@ -1,6 +1,6 @@
 package com.gameshub.controller;
 
-import com.gameshub.exceptions.*;
+import com.gameshub.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -18,6 +18,11 @@ public class GlobalHttpErrorHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(UserNotVerifiedException.class)
+    public ResponseEntity<Object> handleUserNotVerifiedException(UserNotVerifiedException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(UserAlreadyVerifiedException.class)
@@ -43,5 +48,45 @@ public class GlobalHttpErrorHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(RawgGameDetailedNotFoundException.class)
     public ResponseEntity<Object> handleRawgGameDetailedNotFoundException(RawgGameDetailedNotFoundException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(GameNotFoundException.class)
+    public ResponseEntity<Object> handleGameNotFoundException(GameNotFoundException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(GameOpinionNotFoundException.class)
+    public ResponseEntity<Object> handleGameOpinionNotFoundException(GameOpinionNotFoundException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(GameOpinionWithProfanitiesException.class)
+    public ResponseEntity<Object> handleGameOpinionWithProfanitiesException(GameOpinionWithProfanitiesException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(GameOpinionsListNotFoundException.class)
+    public ResponseEntity<Object> handleGameOpinionsListNotFoundException(GameOpinionsListNotFoundException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(GameOpinionUpdateTimeExpiredException.class)
+    public ResponseEntity<Object> handleGameOpinionUpdateTimeExpiredException(GameOpinionUpdateTimeExpiredException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(GameOpinionUpdateAccessDeniedException.class)
+    public ResponseEntity<Object> handleGameOpinionUpdateAccessDeniedException(GameOpinionUpdateAccessDeniedException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(GameAlreadySubscribedException.class)
+    public ResponseEntity<Object> handleGameAlreadySubscribedException(GameAlreadySubscribedException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(GameNotSubscribedException.class)
+    public ResponseEntity<Object> handleGameNotSubscribedException(GameNotSubscribedException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
     }
 }
