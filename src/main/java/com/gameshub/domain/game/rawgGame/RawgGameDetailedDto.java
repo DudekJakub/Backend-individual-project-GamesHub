@@ -1,4 +1,4 @@
-package com.gameshub.domain.game.rawgGame.detailed;
+package com.gameshub.domain.game.rawgGame;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

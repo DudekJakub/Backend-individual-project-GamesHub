@@ -1,4 +1,4 @@
-package com.gameshub.domain.game.rawgGame.fromList;
+package com.gameshub.domain.game.rawgGame;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -37,17 +37,4 @@ public class RawgGameFromListDto {
 
     @JsonProperty(value = "platforms")
     private List<RawgGamePlatforms> platforms;
-
-    @Override
-    public String toString() {
-        return "\n\nRawgGameFromListDto{" +
-                "\nid=" + id +
-                "\nname='" + name + '\'' +
-                "\nreleased=" + released +
-                "\ntba=" + tba +
-                "\nbackgroundImage='" + backgroundImage + '\'' +
-                "\nmetacritic=" + metacritic +
-                "\n\nplatforms=" + platforms +
-                '}';
-    }
 }

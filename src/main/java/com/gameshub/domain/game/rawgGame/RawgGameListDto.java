@@ -1,8 +1,7 @@
-package com.gameshub.domain.game.rawgGame.fromList;
+package com.gameshub.domain.game.rawgGame;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gameshub.domain.game.rawgGame.detailed.RawgGameDetailedDto;
 import lombok.*;
 
 import java.util.List;

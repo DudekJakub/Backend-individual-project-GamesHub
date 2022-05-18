@@ -1,4 +1,4 @@
-package com.gameshub.domain.game.rawgGame.fromList;
+package com.gameshub.domain.game.rawgGame;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -16,10 +16,4 @@ public class RawgGamePlatform {
 
     @JsonProperty(value = "name")
     private String name;
-
-    @Override
-    public String toString() {
-        return  "id=" + id +
-                ", name='" + name + '\'';
-    }
 }

@@ -1,11 +1,10 @@
-package com.gameshub.domain.game.rawgGame.fromList;
+package com.gameshub.domain.game.rawgGame;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Getter
 @Builder
@@ -19,11 +18,4 @@ public class RawgGamePlatforms {
 
     @JsonProperty(value = "released_at")
     private LocalDate releasedAt;
-
-    @Override
-    public String toString() {
-        return "\n" +platform +
-                ", releasedAt=" + releasedAt +
-                '}';
-    }
 }
