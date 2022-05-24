@@ -18,4 +18,8 @@ public class GameOpinionDto {
     private LocalDateTime publicationDate;
     private Long gameId;
     private Long userId;
+
+    public void setOpinion(String opinion) {
+        this.opinion = opinion;
+    }
 }

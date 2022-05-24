@@ -10,9 +10,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@NamedNativeQuery(
-        name = "Game.retrieveGamesWhereNameIsLike",
-        query = "SELECT G.ID, G.NAME FROM GAMES G WHERE NAME LIKE CONCAT('%', :NAME, '%')")
+@NamedNativeQueries({
+        @NamedNativeQuery(name = "Game.retrieveGamesWhereNameIsLike",
+                          query = "SELECT G.ID, G.NAME FROM GAMES G WHERE NAME LIKE CONCAT('%', :NAME, '%')")
+})
 @NamedEntityGraph(
         name = "graph.Game.gameOpinions",
         attributeNodes = @NamedAttributeNode("gameOpinions"))
@@ -33,8 +34,27 @@ public class Game {
     @NotNull
     private String name;
 
+    private String popularityStatus;
+
+    private double averageRating;
+
+    @Column(name = "RATINGS_QUANTITY")
+    private int ratingsQnt;
+
+    @Column(name = "OPINIONS_QUANTITY")
+    private int opinionsQnt;
+
+    @Column(name = "RATINGS_PER_DAY")
+    private double ratingsPerDay;
+
+    @Column(name = "OPINIONS_PER_DAY")
+    private double opinionsPerDay;
+
     @OneToMany(mappedBy = "game")
     private final List<GameOpinion> gameOpinions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "game")
+    private final List<GameRating> gameRatings = new ArrayList<>();
 
     @ManyToMany(targetEntity = User.class, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(name = "GAMES_HAVE_OBSERVERS",
@@ -46,5 +66,5 @@ public class Game {
     private final Set<User> usersOwnedThisGame = new HashSet<>();
 
     @ManyToMany(mappedBy = "gamesWantedToOwn")
-    private final Set<User> usersWantedToOwnThisGame = new HashSet<>();
+    private final Set<User> usersWantedThisGame = new HashSet<>();
 }

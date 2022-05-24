@@ -14,9 +14,8 @@ import java.time.LocalDateTime;
 public class GameRatingDto {
 
     private Long id;
-    private String gameName;
-    private int rating;
-    private final LocalDateTime publicationDate = LocalDateTime.now();
+    private double rating;
+    private LocalDateTime publicationDate;
     private Long gameId;
     private Long userId;
 }

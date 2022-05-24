@@ -13,4 +13,7 @@ public class GameDto {
 
     private Long id;
     private String name;
+    private double averageRating;
+    private double ratingsQnt;
+    private double opinionsQnt;
 }
