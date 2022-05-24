@@ -20,14 +20,14 @@ public class RegistrationController {
 
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> register(@RequestBody RegistrationRequestDto request) throws UserEmailAlreadyExistsInDatabaseException, UserLoginNameAlreadyExistsInDatabaseException,
-                                                                                               PasswordNotMatchException, UserNotFoundException {
+                                                                                               PasswordNotMatchException, EmailAddressNotExistsException, EmailVerificationFailedException {
         return ResponseEntity.ok(registrationService.register(request));
     }
 
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     @GetMapping("/confirm/{loginName}")
     public ResponseEntity<String> confirm(@PathVariable String loginName) throws AccessDeniedException, UserNotFoundException,
-                                                                                 UserAlreadyVerifiedException, UserNotVerifiedException {
+                                                                                 UserAlreadyVerifiedException {
         return ResponseEntity.ok(registrationService.confirmAccount(userService.getUserByLoginName(loginName)));
     }
 }
