@@ -15,13 +15,12 @@ public class GameValidator {
 
     private final GameRepository gameRepository;
 
-    public boolean checkByIdIfGameExistsInDatabase(final Long gameId, final String operationName) throws GameNotFoundException {
+    public void validateDatabasePresence(final Long gameId, final String operationName) throws GameNotFoundException {
         boolean doesGameExistInDatabase = gameRepository.findById(gameId).isPresent();
 
         if (!doesGameExistInDatabase) {
             LOGGER.error(operationName + "Validation failed! Game not found!");
             throw new GameNotFoundException();
         }
-        return true;
     }
 }

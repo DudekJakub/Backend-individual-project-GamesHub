@@ -21,7 +21,7 @@ public class SubscribeValidator {
         Set<User> gameObservers = gameToSubscribe.getObservers();
 
         if (gameObservers.contains(subscriber)) {
-            LOGGER.error(operationName + "Validation failed! User is already subscribing given game!");
+            LOGGER.warn(operationName + "Validation failed! User is already subscribing given game!");
             throw new GameAlreadySubscribedException();
         }
     }
@@ -30,7 +30,7 @@ public class SubscribeValidator {
         Set<User> gameObservers = gameToUnsubscribe.getObservers();
 
         if (!gameObservers.contains(subscriber)) {
-            LOGGER.error(operationName + "Validation failed! User is NOT subscribing given game!");
+            LOGGER.warn(operationName + "Validation failed! User is NOT subscribing given game!");
             throw new GameNotSubscribedException();
         }
     }
