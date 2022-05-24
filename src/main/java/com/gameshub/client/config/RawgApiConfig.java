@@ -1,4 +1,4 @@
-package com.gameshub.rawg.config;
+package com.gameshub.client.config;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Getter
-public class RawgConfig {
+public class RawgApiConfig {
 
     @Value("${rawg.api.endpoint.prod}")
     private String rawgApiEndpoint;
