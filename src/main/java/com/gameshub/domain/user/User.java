@@ -1,7 +1,10 @@
 package com.gameshub.domain.user;
 
+import com.gameshub.domain.book.Book;
 import com.gameshub.domain.game.Game;
 import com.gameshub.domain.game.GameOpinion;
+import com.gameshub.domain.game.GameRating;
+import com.gameshub.domain.notification.AppNotification;
 import com.sun.istack.NotNull;
 import lombok.*;
 
@@ -9,6 +12,12 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.*;
 
+@NamedQueries({
+      @NamedQuery(name = "User.retrieveVerifiedUsers",
+                  query = "FROM USERS WHERE VERIFIED = true"),
+      @NamedQuery(name = "User.retrieveAdmins",
+                  query = "FROM USERS WHERE ROLES = 'ADMIN'")
+})
 @NamedEntityGraphs({
         @NamedEntityGraph(
                 name = "graph.User.games",
@@ -64,9 +73,29 @@ public class User {
     @NotNull
     private boolean verified;
 
+    @Column(name = "OPINIONS_QNT")
+    private int opinionsQnt;
+
+    @Column(name = "OPINIONS_PER_DAY")
+    private double opinionsPerDay;
+
+    @Column(name = "RATINGS_QNT")
+    private int ratingsQnt;
+
+    @Column(name = "RATINGS_PER_DAY")
+    private double ratingsPerDay;
+
     @OneToMany(mappedBy = "user")
     private final List<GameOpinion> gameOpinions = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user")
+    private final List<GameRating> gameRatings = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "observers")
+    private final Set<Game> observedGames = new HashSet<>();
+
+    @ManyToMany(mappedBy = "notificatedUsers")
+    private final Set<AppNotification> appNotifications = new HashSet<>();
 
     @ManyToMany(targetEntity = Game.class, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(name = "USERS_HAVE_GAMES",
@@ -82,6 +111,9 @@ public class User {
     private final Set<Game> gamesWantedToOwn = new HashSet<>();
 
 
-    @ManyToMany(mappedBy = "observers")
-    private final Set<Game> observedGames = new HashSet<>();
+    @ManyToMany(targetEntity = Book.class, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinTable(name = "USERS_MEMORIZED_BOOKS",
+               joinColumns =        {@JoinColumn(name = "USER_ID", referencedColumnName = "ID")},
+               inverseJoinColumns = {@JoinColumn(name = "BOOK_ID", referencedColumnName = "ID")})
+    private final Set<Book> booksMemorized = new HashSet<>();
 }
