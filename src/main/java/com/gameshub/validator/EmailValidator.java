@@ -1,7 +1,10 @@
 package com.gameshub.validator;
 
+import com.gameshub.exception.EmailAddressNotExistsException;
+import com.gameshub.exception.EmailVerificationFailedException;
 import com.gameshub.exception.UserEmailAlreadyExistsInDatabaseException;
 import com.gameshub.repository.UserRepository;
+import com.gameshub.service.outern_api.EmailVerificationService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,14 +17,21 @@ public class EmailValidator {
     private static final Logger LOGGER = LoggerFactory.getLogger(EmailValidator.class);
 
     private final UserRepository userRepository;
+    private final EmailVerificationService emailVerificationService;
 
-    public boolean validateIfEmailAlreadyExistInDatabase(final String email, final String operationName) throws UserEmailAlreadyExistsInDatabaseException {
+    public void validateEmailDatabaseAbsence(final String email, final String operationName) throws UserEmailAlreadyExistsInDatabaseException {
         boolean doesEmailExistInDatabase = userRepository.findByEmail(email).isPresent();
 
         if (doesEmailExistInDatabase) {
-            LOGGER.error(operationName + "Validation result : email already exist in database!");
+            LOGGER.warn(operationName + "Validation result : email already exist in database!");
             throw new UserEmailAlreadyExistsInDatabaseException();
         }
-        return false;
+    }
+
+    public void validateEmailSmtpStatus(final String email, final String operationName) throws EmailVerificationFailedException, EmailAddressNotExistsException {
+        if (!emailVerificationService.checkEmailExists(email)) {
+            LOGGER.warn(operationName + "Validation failed! Email's existence SMTP status is negative!");
+            throw new EmailAddressNotExistsException();
+        }
     }
 }
