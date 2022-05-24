@@ -10,7 +10,6 @@ import com.gameshub.mapper.user.UserMapper;
 import com.gameshub.repository.GameRepository;
 import com.gameshub.repository.UserRepository;
 import com.gameshub.service.GameService;
-import com.gameshub.validator.AccountConfirmValidator;
 import com.gameshub.validator.SubscribeValidator;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -33,20 +32,16 @@ public class GameFacade {
     private final GameRepository gameRepository;
     private final UserRepository userRepository;
 
-    private final AccountConfirmValidator accountConfirmValidator;
     private final SubscribeValidator subscribeValidator;
 
     public String subscribeGame(final Long gameId, final Long userId) throws GameNotFoundException, UserNotFoundException,
-                                                                             UserNotVerifiedException, GameAlreadySubscribedException {
+                                                                             GameAlreadySubscribedException {
         String operationDoneSuccessfully = "Game with ID: " + gameId + " subscribed successfully!";
         Game gameToSubscribe = gameRepository.findById(gameId).orElseThrow(GameNotFoundException::new);
         User subscriber = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 
         LOGGER.info("Subscribing game with ID: " + gameId + " for user with ID : " + userId);
-
-        accountConfirmValidator.validateByUserId(userId, SUBSCRIBE_GAME);
         subscribeValidator.validateGameObserversPresence(gameToSubscribe, subscriber, SUBSCRIBE_GAME);
-
         gameService.subscribeGame(gameToSubscribe, subscriber);
         LOGGER.info(operationDoneSuccessfully);
 
@@ -54,13 +49,12 @@ public class GameFacade {
     }
 
     public String unsubscribeGame(final Long gameId, final Long userId) throws GameNotFoundException, UserNotFoundException,
-                                                                               UserNotVerifiedException, GameNotSubscribedException {
+                                                                               GameNotSubscribedException {
         String operationDoneSuccessfully = "Game with ID: " + gameId + " unsubscribed successfully!";
         Game gameToUnsubscribe = gameRepository.findById(gameId).orElseThrow(GameNotFoundException::new);
         User subscriber = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 
         LOGGER.info("Unsubscribing game with ID: " + gameId + " for user with ID: " + userId);
-        accountConfirmValidator.validateByUserId(userId, UNSUBSCRIBE_GAME);
         subscribeValidator.validateGameObserversAbsence(gameToUnsubscribe, subscriber, UNSUBSCRIBE_GAME);
         gameService.unsubscribeGame(gameToUnsubscribe, subscriber);
         LOGGER.info(operationDoneSuccessfully);
@@ -68,48 +62,42 @@ public class GameFacade {
         return operationDoneSuccessfully;
     }
 
-    public GameDto markGameAsOwned(final Long gameId, final Long userId) throws GameNotFoundException, UserNotFoundException,
-                                                                                UserNotVerifiedException {
+    public GameDto markGameAsOwned(final Long gameId, final Long userId) throws GameNotFoundException, UserNotFoundException {
         Game gameToMarkAsOwned = gameRepository.findById(gameId).orElseThrow(GameNotFoundException::new);
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 
         LOGGER.info("Marking game with ID: " + gameId + " as owned by user with ID: " + userId);
-        accountConfirmValidator.validateByUserId(userId, MARK_GAME_AS_OWNED);
         gameService.markGameAsOwned(gameToMarkAsOwned, user);
         LOGGER.info("Gamed marked as owned successfully!");
 
         return gameMapper.mapToGameDto(gameToMarkAsOwned);
     }
 
-    public GameDto markGameAsWantedToOwn(final Long gameId, final Long userId) throws GameNotFoundException, UserNotFoundException,
-                                                                                      UserNotVerifiedException {
+    public GameDto markGameAsWantedToOwn(final Long gameId, final Long userId) throws GameNotFoundException, UserNotFoundException {
         Game gameToMarkAsWantedToOwn = gameRepository.findById(gameId).orElseThrow(GameNotFoundException::new);
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 
         LOGGER.info("Marking game with ID: " + gameId + " as wanted by user with ID: " + userId);
-        accountConfirmValidator.validateByUserId(userId, MARK_GAME_AS_WANTED_TO_OWN);
         gameService.markGameAsWantedToOwn(gameToMarkAsWantedToOwn, user);
         LOGGER.info("Gamed marked as wanted successfully!");
 
         return gameMapper.mapToGameDto(gameToMarkAsWantedToOwn);
     }
 
-    public Set<UserOpenDto> fetchGameObservers(final Long gameId) throws GameNotFoundException, UserNotVerifiedException {
+    public Set<UserOpenDto> fetchGameObservers(final Long gameId) throws GameNotFoundException {
         Game gameForObserversSet = gameRepository.findById(gameId).orElseThrow(GameNotFoundException::new);
-        accountConfirmValidator.validateCurrentLoggedUser(FETCH_GAME_OBSERVERS);
 
-        return userMapper.mapToUserOpenDtoSet(gameService.getAllGameObservers(gameForObserversSet));
+        return userMapper.mapToUserOpenDtoSet(gameService.getGameObservers(gameForObserversSet));
     }
 
-    public Set<GameDto> fetchGamesUserOwns(final Long userId) throws UserNotFoundException, UserNotVerifiedException {
+    public Set<GameDto> fetchGamesUserOwns(final Long userId) throws UserNotFoundException {
         User userForGamesItOwns = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-        accountConfirmValidator.validateCurrentLoggedUser(FETCH_GAMES_USER_OWNS);
+
         return gameMapper.mapToGameSetDto(gameService.getGamesUserOwns(userForGamesItOwns));
     }
 
-    public Set<GameDto> fetchGamesUserWantsToOwn(final Long userId) throws UserNotFoundException, UserNotVerifiedException {
+    public Set<GameDto> fetchGamesUserWantsToOwn(final Long userId) throws UserNotFoundException {
         User userForGamesItWantsToOwn = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-        accountConfirmValidator.validateCurrentLoggedUser(FETCH_GAMES_USER_WANTS);
 
         return gameMapper.mapToGameSetDto(gameService.getGamesUserWantsToOwn(userForGamesItWantsToOwn));
     }
