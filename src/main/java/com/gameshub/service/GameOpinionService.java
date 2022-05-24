@@ -15,6 +15,7 @@ import com.gameshub.subscribe.SubscribeEventVisitor;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,10 +24,11 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class GameOpinionService implements IGameObservable {
+public class GameOpinionService implements GameObservable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GameOpinionService.class);
 
+    private final ApplicationContext appContext;
     private final GameOpinionRepository gameOpinionRepository;
     private final SubscribeEventVisitor subscribeEventVisitor;
     private final GameOpinionMapper gameOpinionMapper;
@@ -35,39 +37,39 @@ public class GameOpinionService implements IGameObservable {
     public GameOpinion createGameOpinion(final GameOpinionDto gameOpinionDto) throws GameNotFoundException {
         Long gameId = gameOpinionDto.getGameId();
         Game newOpinionGame = gameRepository.findById(gameId).orElseThrow(GameNotFoundException::new);
-        int opinionsQnt = newOpinionGame.getGameOpinions().size();
         Set<User> observers = newOpinionGame.getObservers();
         GameOpinion newOpinion = null;
 
         try {
-            LOGGER.info("Creating new opinion to game with given ID: " + gameId);
+            LOGGER.info("Creating new opinion to game with ID: " + gameId);
             newOpinion = gameOpinionMapper.mapToGameOpinion(gameOpinionDto);
-            gameOpinionRepository.save(newOpinion);
-            LOGGER.info("New opinion to game with given ID : " + gameId + " created successfully!");
-
+            GameOpinion savedOpinion = gameOpinionRepository.save(newOpinion);
+            LOGGER.info("New opinion to game with ID : " + gameId + " created successfully!");
             if (observers.size() > 0) {
-                LOGGER.info("Notifying observers for game with ID: " + gameId);
+                LOGGER.info("[NEW GAME OPINION] Notifying observers for game with ID: " + gameId);
                 for (User observer : observers) {
-                    if (!newOpinion.getUser().equals(observer)) {
-                        GameOpinionAddedEvent gameOpinionAddedEvent = prepareNewOpinionEventDataForSpecificObserver(observer, newOpinion, opinionsQnt);
-                        notifyObserver(gameOpinionAddedEvent);
+                    if (!savedOpinion.getUser().equals(observer)) {
+                        GameOpinionAddedEvent newOpinionEvent = prepareNewOpinionEventDataForSpecificObserver(observer, savedOpinion);
+                        notifyObserver(newOpinionEvent);
                     }
                 }
-                LOGGER.info("Notifying observers for game with ID: " + gameId + " done successfully!");
+                LOGGER.info("[NEW GAME OPINION] Notifying observers for game with ID: " + gameId + " done successfully!");
             }
         } catch (GameNotFoundException | UserNotFoundException e) {
-            LOGGER.error("Creating failed! Exception occurred! " + e.getMessage());
+            LOGGER.warn("Creating failed! Exception occurred! " + e.getMessage());
         }
+
         return newOpinion;
     }
 
-    public GameOpinion updateGameOpinion(final String updatedText, final GameOpinion gameOpinion) {
-        gameOpinion.setOpinion(updatedText);
-        gameOpinionRepository.save(gameOpinion);
-        return gameOpinion;
+    public GameOpinion updateGameOpinion(final String updatedText, final GameOpinion gameOpinionToUpdate) {
+        gameOpinionToUpdate.setOpinion(updatedText);
+        gameOpinionRepository.save(gameOpinionToUpdate);
+
+        return gameOpinionToUpdate;
     }
 
-    public List<GameOpinion> getGameOpinionListForGivenGameId(final Long gameId) {
+    public List<GameOpinion> getGameOpinionList(final Long gameId) {
         return gameOpinionRepository
                 .findAll()
                 .stream()
@@ -75,12 +77,29 @@ public class GameOpinionService implements IGameObservable {
                 .collect(Collectors.toList());
     }
 
+    public List<GameOpinion> getFourLatestGameOpinions(final Game gameForOpinionsList) {
+        return gameOpinionRepository.retrieveThreeLatestGameOpinionsForGame(gameForOpinionsList.getId());
+    }
+
     @Override
     public void notifyObserver(final SubscribeEvent subscribeEvent) {
         subscribeEvent.accept(subscribeEventVisitor);
     }
 
-    private GameOpinionAddedEvent prepareNewOpinionEventDataForSpecificObserver(final User observer, final GameOpinion newOpinion, final int opinionsQnt) {
-        return new GameOpinionAddedEvent(observer, observer.getFirstname(), observer.getEmail(), newOpinion.getOpinion(), newOpinion, opinionsQnt);
+    public String censorProfanities(final String opinionWithProfanities) {
+       List<?> profanities = (List<?>) appContext.getBean("getProfanities");
+       StringBuilder censoredOpinion = new StringBuilder();
+
+        for (String word : opinionWithProfanities.split(" ")) {
+            if (profanities.contains(word)) {
+                word = "[censored]";
+            }
+            censoredOpinion.append(" ").append(word);
+        }
+        return censoredOpinion.toString();
+    }
+
+    private GameOpinionAddedEvent prepareNewOpinionEventDataForSpecificObserver(final User observer, final GameOpinion newOpinion) {
+        return new GameOpinionAddedEvent(observer, newOpinion.getOpinion(), newOpinion);
     }
 }

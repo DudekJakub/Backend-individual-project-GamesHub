@@ -1,13 +1,13 @@
 package com.gameshub.service;
 
+import com.gameshub.domain.book.Book;
 import com.gameshub.domain.game.Game;
+import com.gameshub.domain.game.GameOpinion;
+import com.gameshub.domain.game.GameRating;
 import com.gameshub.domain.user.AppUserDetails;
 import com.gameshub.domain.user.AppUserNotificationStrategy;
 import com.gameshub.domain.user.User;
-import com.gameshub.exception.UserEmailAlreadyExistsInDatabaseException;
-import com.gameshub.exception.UserLoginNameAlreadyExistsInDatabaseException;
 import com.gameshub.exception.UserNotFoundException;
-import com.gameshub.repository.GameRepository;
 import com.gameshub.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,7 +20,6 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +31,6 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(final String loginName) throws UsernameNotFoundException {
         Optional<User> user = userRepository.findByLoginName(loginName);
-
         user.orElseThrow(() -> new UsernameNotFoundException("User not found: " + loginName));
 
         return user.map(AppUserDetails::new).get();
@@ -72,14 +70,31 @@ public class UserService implements UserDetailsService {
                 appUserNotificationStrategy = AppUserNotificationStrategy.INSIDE_APP_NOTIFICATION;
                 break;
         }
-
         userFromDatabase.setNotificationStrategy(appUserNotificationStrategy);
         saveUser(userFromDatabase);
+    }
+
+    public Set<Book> getUserMemorizedBooks(final Long userId) throws UserNotFoundException {
+        return userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new)
+                .getBooksMemorized();
     }
 
     public Set<Game> getUserObservedGames(final Long userId) throws UserNotFoundException {
         return userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new)
                 .getObservedGames();
+    }
+
+    public List<GameOpinion> getUserGamesOpinions(final Long userId) throws UserNotFoundException {
+        return userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new)
+                .getGameOpinions();
+    }
+
+    public List<GameRating> getUserGamesRatings(final Long userId) throws UserNotFoundException {
+        return userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new)
+                .getGameRatings();
     }
 }
