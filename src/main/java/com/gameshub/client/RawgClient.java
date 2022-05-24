@@ -1,8 +1,8 @@
-package com.gameshub.rawg.client;
+package com.gameshub.client;
 
 import com.gameshub.domain.game.rawgGame.RawgGameDetailedDto;
 import com.gameshub.domain.game.rawgGame.RawgGameListDto;
-import com.gameshub.rawg.config.RawgConfig;
+import com.gameshub.client.config.RawgApiConfig;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,11 +21,11 @@ public class RawgClient {
     private static final Logger LOGGER = LoggerFactory.getLogger(RawgClient.class);
 
     private final RestTemplate restTemplate;
-    private final RawgConfig rawgConfig;
+    private final RawgApiConfig rawgApiConfig;
 
-    private URI URI_GAMES_LIST(int pageNumber) {
-        return UriComponentsBuilder.fromHttpUrl(rawgConfig.getRawgApiEndpoint() + "games")
-                .queryParam("key", rawgConfig.getRawgAppKey())
+    private URI URI_GAMES_LIST(final int pageNumber) {
+        return UriComponentsBuilder.fromHttpUrl(rawgApiConfig.getRawgApiEndpoint() + "games")
+                .queryParam("key", rawgApiConfig.getRawgAppKey())
                 .queryParam("page", pageNumber)
                 .queryParam("exclude_additions", "true")
                 .queryParam("exclude_parents", "false")
@@ -37,23 +37,23 @@ public class RawgClient {
                 .toUri();
     }
 
-    private URI URI_GAME_BY_ID(Long gameId) {
-        return UriComponentsBuilder.fromHttpUrl(rawgConfig.getRawgApiEndpoint() + "games/" + gameId)
-                .queryParam("key", rawgConfig.getRawgAppKey())
+    private URI URI_GAME_BY_ID(final Long gameId) {
+        return UriComponentsBuilder.fromHttpUrl(rawgApiConfig.getRawgApiEndpoint() + "games/" + gameId)
+                .queryParam("key", rawgApiConfig.getRawgAppKey())
                 .build()
                 .encode()
                 .toUri();
     }
 
-    private URI URI_GAME_BY_NAME(String name) {
-        return UriComponentsBuilder.fromHttpUrl(rawgConfig.getRawgApiEndpoint() + "games/" + name)
-                .queryParam("key", rawgConfig.getRawgAppKey())
+    private URI URI_GAME_BY_NAME(final String name) {
+        return UriComponentsBuilder.fromHttpUrl(rawgApiConfig.getRawgApiEndpoint() + "games/" + name)
+                .queryParam("key", rawgApiConfig.getRawgAppKey())
                 .build()
                 .encode()
                 .toUri();
     }
 
-    public List<RawgGameListDto> getGamesList(int pageNumber) {
+    public List<RawgGameListDto> getGamesList(final int pageNumber) {
         URI url = URI_GAMES_LIST(pageNumber);
         try {
             RawgGameListDto gamesResponse = restTemplate.getForObject(url, RawgGameListDto.class);
@@ -66,27 +66,23 @@ public class RawgClient {
         }
     }
 
-    public Optional<RawgGameDetailedDto> getGameByName(String name) {
+    public Optional<RawgGameDetailedDto> getGameByName(final String name) {
         URI url = URI_GAME_BY_NAME(name);
         try {
-
             RawgGameDetailedDto gameResponse = restTemplate.getForObject(url, RawgGameDetailedDto.class);
             return Optional.ofNullable(gameResponse);
-
-        } catch (NoSuchElementException|RestClientException e) {
+        } catch (NoSuchElementException | RestClientException e) {
             LOGGER.error(e.getMessage(), e);
             return Optional.empty();
         }
     }
 
-    public Optional<RawgGameDetailedDto> getGameById(Long gameId) {
+    public Optional<RawgGameDetailedDto> getGameById(final Long gameId) {
         URI url = URI_GAME_BY_ID(gameId);
         try {
-
             RawgGameDetailedDto gameResponse = restTemplate.getForObject(url, RawgGameDetailedDto.class);
             return Optional.ofNullable(gameResponse);
-
-        } catch (RestClientException|NoSuchElementException e) {
+        } catch (NoSuchElementException | RestClientException e) {
             LOGGER.error(e.getMessage(), e);
             return Optional.empty();
         }
