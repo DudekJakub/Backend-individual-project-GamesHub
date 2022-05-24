@@ -1,9 +1,11 @@
-package com.gameshub.service;
+package com.gameshub.service.outern_api;
 
 import com.gameshub.domain.game.rawgGame.RawgGameDetailedDto;
+import com.gameshub.exception.GameNotFoundException;
+import com.gameshub.exception.GameSearchNotFoundException;
 import com.gameshub.exception.RawgGameDetailedNotFoundException;
 import com.gameshub.mapper.game.RawgGameNameMapper;
-import com.gameshub.rawg.client.RawgClient;
+import com.gameshub.client.RawgClient;
 import com.gameshub.repository.GameRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -22,39 +24,35 @@ public class RawgService {
     private final RawgClient rawgClient;
     private final GameRepository gameRepository;
 
-    public List<RawgGameDetailedDto> fetchListOfRawgGamesRelatedToGivenName(final String name) {
-        var mappedName = RawgGameNameMapper.mapGameNameToRawgSlugName(name);
-        var listOfGames = gameRepository.retrieveGamesWhereNameIsLike(mappedName);
-        var resultList = new ArrayList<RawgGameDetailedDto>();
+    public List<RawgGameDetailedDto> fetchListOfRawgGamesRelatedToGivenName(final String name) throws GameSearchNotFoundException {
+        String mappedName = RawgGameNameMapper.mapGameNameToRawgSlugName(name);
+        List<Long> listOfGames = gameRepository.retrieveGamesWhereNameIsLike(mappedName);
+        List<RawgGameDetailedDto> resultList = new ArrayList<>();
 
-        LOGGER.info("Searching for RAWG's games...");
+        if (listOfGames.size() == 0) {
+            throw new GameSearchNotFoundException();
+        }
+
         listOfGames.forEach(id -> {
             try {
-                resultList
-                        .add(rawgClient.getGameById(id)
-                                .orElseThrow(RawgGameDetailedNotFoundException::new));
+                resultList.add(rawgClient.getGameById(id).orElseThrow(RawgGameDetailedNotFoundException::new));
             } catch (RawgGameDetailedNotFoundException e) {
-                LOGGER.error("Exception occurred when looking for game with id: " + id);
+                LOGGER.warn("Exception occurred when looking for game with id: " + id);
                 e.getCause();
             }
         });
-        LOGGER.info("Search done successfully");
-
         return resultList;
     }
 
     public RawgGameDetailedDto getRawgGameDetailedById(final Long id) {
         RawgGameDetailedDto resultRawgGame = null;
 
-        LOGGER.info("Searching for RAWG's game by id...");
         try {
             resultRawgGame = rawgClient.getGameById(id).orElseThrow(RawgGameDetailedNotFoundException::new);
         } catch (RawgGameDetailedNotFoundException e) {
-            LOGGER.error("Exception occurred when looking for game with id: " + id);
+            LOGGER.warn("Exception occurred when looking for game with id: " + id);
             e.getCause();
         }
         return resultRawgGame;
     }
-
-
 }
