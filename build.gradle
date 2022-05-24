@@ -49,6 +49,7 @@ dependencies {
     //THYMELEAF
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
+
 //     //N+1 HIBERNATE DETECTOR
 //     implementation 'com.yannbriancon:spring-hibernate-query-utils:2.0.0'
 
