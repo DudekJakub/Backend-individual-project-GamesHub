@@ -1,4 +1,4 @@
-package com.gameshub.controller;
+package com.gameshub.controller.httpHandler;
 
 import com.gameshub.exception.*;
 import org.springframework.http.HttpStatus;
@@ -9,6 +9,11 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @ControllerAdvice
 public class GlobalHttpErrorHandler extends ResponseEntityExceptionHandler {
+
+    @ExceptionHandler(GamesStatisticNotFound.class)
+    public ResponseEntity<Object> handleGamesStatisticNotFoundException(GamesStatisticNotFound e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException e) {
@@ -35,6 +40,11 @@ public class GlobalHttpErrorHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(EmailAddressNotExistsException.class)
+    public ResponseEntity<Object> handleEmailAddressNotExistsException(EmailAddressNotExistsException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(UserLoginNameAlreadyExistsInDatabaseException.class)
     public ResponseEntity<Object> handleUserLoginNameAlreadyExistsInDatabaseException(UserLoginNameAlreadyExistsInDatabaseException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
@@ -47,6 +57,11 @@ public class GlobalHttpErrorHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(RawgGameDetailedNotFoundException.class)
     public ResponseEntity<Object> handleRawgGameDetailedNotFoundException(RawgGameDetailedNotFoundException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(GameSearchNotFoundException.class)
+    public ResponseEntity<Object> handleGameSearchNotFoundException(GameSearchNotFoundException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
@@ -65,19 +80,29 @@ public class GlobalHttpErrorHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(GameOpinionsListNotFoundException.class)
-    public ResponseEntity<Object> handleGameOpinionsListNotFoundException(GameOpinionsListNotFoundException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-    }
-
     @ExceptionHandler(GameOpinionUpdateTimeExpiredException.class)
     public ResponseEntity<Object> handleGameOpinionUpdateTimeExpiredException(GameOpinionUpdateTimeExpiredException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(GameOpinionUpdateAccessDeniedException.class)
-    public ResponseEntity<Object> handleGameOpinionUpdateAccessDeniedException(GameOpinionUpdateAccessDeniedException e) {
+    @ExceptionHandler(GameDataUpdateAccessDeniedException.class)
+    public ResponseEntity<Object> handleGameDataUpdateAccessDeniedException(GameDataUpdateAccessDeniedException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(GameRatingNotFoundException.class)
+    public ResponseEntity<Object> handleGameRatingNotFoundException(GameRatingNotFoundException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(GameAlreadyRatedByUserException.class)
+    public ResponseEntity<Object> handleGameAlreadyRatedByUserException(GameAlreadyRatedByUserException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(GameRatingOutOfRangeException.class)
+    public ResponseEntity<Object> handleGameRatingOutOfRangeException(GameRatingOutOfRangeException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(GameAlreadySubscribedException.class)
@@ -87,6 +112,16 @@ public class GlobalHttpErrorHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(GameNotSubscribedException.class)
     public ResponseEntity<Object> handleGameNotSubscribedException(GameNotSubscribedException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(GoogleBooksNotFoundException.class)
+    public ResponseEntity<Object> handleGoogleBookNotFoundException(GoogleBooksNotFoundException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(BookNotMemorizedException.class)
+    public ResponseEntity<Object> handleBookNotMemorizedException(BookNotMemorizedException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
     }
 }
