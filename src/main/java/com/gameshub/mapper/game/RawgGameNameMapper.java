@@ -1,7 +1,5 @@
 package com.gameshub.mapper.game;
 
-import java.util.Locale;
-
 public class RawgGameNameMapper {
 
     public static String mapGameNameToRawgSlugName(final String name) {
