@@ -11,10 +11,10 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class RawgGamePlatforms {
+public class RawgGamePlatformsDto {
 
     @JsonProperty(value = "platform")
-    private RawgGamePlatform platform;
+    private RawgGamePlatformDto platform;
 
     @JsonProperty(value = "released_at")
     private LocalDate releasedAt;

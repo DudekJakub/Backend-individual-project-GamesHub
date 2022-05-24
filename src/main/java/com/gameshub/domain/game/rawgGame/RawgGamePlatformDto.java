@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class RawgGamePlatform {
+public class RawgGamePlatformDto {
 
     @JsonProperty(value = "id")
     private Long id;

@@ -36,5 +36,5 @@ public class RawgGameFromListDto {
     private double metacritic;
 
     @JsonProperty(value = "platforms")
-    private List<RawgGamePlatforms> platforms;
+    private List<RawgGamePlatformsDto> platforms;
 }

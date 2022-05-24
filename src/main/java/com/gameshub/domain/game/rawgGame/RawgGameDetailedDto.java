@@ -22,17 +22,4 @@ public class RawgGameDetailedDto {
 
     @JsonProperty(value = "website")
     private String officialWebsiteURL;
-
-    @Override
-    public String toString() {
-        return "\n\nRawgGameDetailedDto{" +
-                "\nid=" + id +
-                "\nname='" + name + '\'' +
-                "\ndescription='" + description + '\'' +
-                "\nmetacritic=" + metacritic +
-                "\nreleased=" + released +
-                "\ntba=" + tba +
-                "\nofficialWebsiteURL='" + officialWebsiteURL + '\'' +
-                '}';
-    }
 }
