@@ -10,6 +10,9 @@ import com.gameshub.mapper.user.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class GameRatingMapper {
@@ -26,7 +29,7 @@ public class GameRatingMapper {
 
         return GameRating.builder()
                 .id(gameRatingDto.getId())
-                .gameName(gameRatingDto.getGameName())
+                .gameName(gameFoundById.getName())
                 .rating(gameRatingDto.getRating())
                 .game(gameFoundById)
                 .user(userFoundById)
@@ -39,10 +42,22 @@ public class GameRatingMapper {
 
         return GameRatingDto.builder()
                 .id(gameRating.getId())
-                .gameName(gameRating.getGameName())
                 .rating(gameRating.getRating())
+                .publicationDate(gameRating.getPublicationDate())
                 .gameId(gameId)
                 .userId(userId)
                 .build();
+    }
+
+    public List<GameRatingDto> mapToListOfGameRatingDtos(List<GameRating> gameRatingList) {
+        return gameRatingList.stream()
+                .map(gameRating -> GameRatingDto.builder()
+                        .id(gameRating.getId())
+                        .rating(gameRating.getRating())
+                        .publicationDate(gameRating.getPublicationDate())
+                        .gameId(gameRating.getGame().getId())
+                        .userId(gameRating.getUser().getId())
+                        .build())
+                .collect(Collectors.toList());
     }
 }
