@@ -1,7 +1,9 @@
 package com.gameshub.controller;
 
 import com.gameshub.domain.game.rawgGame.RawgGameDetailedDto;
-import com.gameshub.service.RawgService;
+import com.gameshub.exception.GameNotFoundException;
+import com.gameshub.exception.GameSearchNotFoundException;
+import com.gameshub.service.outern_api.RawgService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +22,8 @@ public class RawgGameController {
         return ResponseEntity.ok(rawgService.getRawgGameDetailedById(id));
     }
 
-    @GetMapping()
-    public ResponseEntity<List<RawgGameDetailedDto>> rawgGamesRelatedToGivenName(@RequestParam String name) {
+    @GetMapping
+    public ResponseEntity<List<RawgGameDetailedDto>> rawgGamesRelatedToGivenName(@RequestParam String name) throws GameSearchNotFoundException {
         return ResponseEntity.ok(rawgService.fetchListOfRawgGamesRelatedToGivenName(name));
     }
 }
