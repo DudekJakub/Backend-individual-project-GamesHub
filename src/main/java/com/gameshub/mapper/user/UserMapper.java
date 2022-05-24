@@ -1,5 +1,8 @@
 package com.gameshub.mapper.user;
 
+import com.gameshub.domain.game.Game;
+import com.gameshub.domain.game.GameOpinion;
+import com.gameshub.domain.game.GameRating;
 import com.gameshub.domain.user.User;
 import com.gameshub.domain.user.UserCloseDto;
 import com.gameshub.domain.user.UserOpenDto;
@@ -18,26 +21,6 @@ public class UserMapper {
 
     private final UserRepository repository;
 
-    public User mapToUserFromCloseDto(final UserCloseDto userCloseDto) {
-        return User.builder()
-                .id(userCloseDto.getId())
-                .loginName(userCloseDto.getLoginName())
-                .firstname(userCloseDto.getFirstname())
-                .lastname(userCloseDto.getLastname())
-                .email(userCloseDto.getEmail())
-                .appUserRole(userCloseDto.getAppUserRole())
-                .active(userCloseDto.isActive())
-                .verified(userCloseDto.isVerified())
-                .build();
-    }
-
-    public User mapToUserFromOpenDto(final UserOpenDto userOpenDto) {
-        return User.builder()
-                .firstname(userOpenDto.getFirstname())
-                .lastname(userOpenDto.getLastname())
-                .build();
-    }
-
     public User mapToUserFromId(final Long userId) throws UserNotFoundException {
         return repository
                 .findById(userId)
@@ -52,9 +35,19 @@ public class UserMapper {
                 .lastname(user.getLastname())
                 .email(user.getEmail())
                 .appUserRole(user.getAppUserRole())
+                .notificationStrategy(user.getNotificationStrategy())
                 .registeredDate(user.getRegisteredDate())
                 .active(user.isActive())
                 .verified(user.isVerified())
+                .opinionsQnt(user.getOpinionsQnt())
+                .opinionsPerDay(user.getOpinionsPerDay())
+                .ratingsQnt(user.getRatingsQnt())
+                .ratingsPerDay(user.getRatingsPerDay())
+                .gameOpinionsIds(user.getGameOpinions().stream().map(GameOpinion::getId).collect(Collectors.toList()))
+                .gameRatingsIds(user.getGameRatings().stream().map(GameRating::getId).collect(Collectors.toList()))
+                .gamesOwnedIds(user.getGamesOwned().stream().map(Game::getId).collect(Collectors.toSet()))
+                .gamesWantedIds(user.getGamesWantedToOwn().stream().map(Game::getId).collect(Collectors.toSet()))
+                .gamesObservedIds(user.getObservedGames().stream().map(Game::getId).collect(Collectors.toSet()))
                 .build();
     }
 
@@ -64,6 +57,15 @@ public class UserMapper {
                 .lastname(user.getLastname())
                 .registeredDate(user.getRegisteredDate())
                 .email(user.getEmail())
+                .opinionsQnt(user.getOpinionsQnt())
+                .opinionsPerDay(user.getOpinionsPerDay())
+                .ratingsQnt(user.getRatingsQnt())
+                .ratingsPerDay(user.getRatingsPerDay())
+                .gameOpinionsIds(user.getGameOpinions().stream().map(GameOpinion::getId).collect(Collectors.toList()))
+                .gameRatingsIds(user.getGameRatings().stream().map(GameRating::getId).collect(Collectors.toList()))
+                .gamesOwnedIds(user.getGamesOwned().stream().map(Game::getId).collect(Collectors.toSet()))
+                .gamesWantedIds(user.getGamesWantedToOwn().stream().map(Game::getId).collect(Collectors.toSet()))
+                .gamesObservedIds(user.getObservedGames().stream().map(Game::getId).collect(Collectors.toSet()))
                 .build();
     }
 
@@ -83,17 +85,5 @@ public class UserMapper {
         return users.stream()
                 .map(this::mapToUserOpenDto)
                 .collect(Collectors.toSet());
-    }
-
-    public List<User> mapToUserListFromCloseDto(final List<UserCloseDto> userCloseDtos) {
-        return userCloseDtos.stream()
-                .map(this::mapToUserFromCloseDto)
-                .collect(Collectors.toList());
-    }
-
-    public List<User> mapToUserListFromOpenDto(final List<UserOpenDto> userOpenDtos) {
-        return userOpenDtos.stream()
-                .map(this::mapToUserFromOpenDto)
-                .collect(Collectors.toList());
     }
 }
