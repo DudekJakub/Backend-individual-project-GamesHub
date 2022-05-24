@@ -18,24 +18,28 @@ public class GameOpinionController {
 
     private final GameOpinionFacade facade;
 
-    @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','USER') and @userValidator.hasValidatedAccount()")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<GameOpinionDto> createGameOpinion(@RequestBody GameOpinionDto gameOpinionDto) throws UserNotFoundException, UserNotVerifiedException,
-                                                                                                               GameOpinionWithProfanitiesException, GameNotFoundException {
+    public ResponseEntity<GameOpinionDto> createGameOpinion(@RequestBody GameOpinionDto gameOpinionDto) throws GameNotFoundException, GameOpinionLengthTooLongException {
         return ResponseEntity.ok(facade.createGameOpinion(gameOpinionDto));
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','USER') and @userValidator.hasValidatedAccount()")
     @PatchMapping(value = "/{opinionId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<GameOpinionDto> updateGameOpinion(@RequestBody String opinionToUpdate, @PathVariable Long opinionId) throws UserNotFoundException, GameOpinionNotFoundException,
-                                                                                                                                      GameOpinionUpdateTimeExpiredException, GameOpinionWithProfanitiesException,
-                                                                                                                                      GameOpinionUpdateAccessDeniedException {
+    public ResponseEntity<GameOpinionDto> updateGameOpinion(@RequestBody String opinionToUpdate, @PathVariable Long opinionId) throws UserNotFoundException, GameOpinionNotFoundException, GameOpinionUpdateTimeExpiredException,
+                                                                                                                                      GameOpinionLengthTooLongException, GameDataUpdateAccessDeniedException {
         return ResponseEntity.ok(facade.updateGameOpinion(opinionToUpdate, opinionId));
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
+    @PreAuthorize("hasAuthority('ADMIN') and @userValidator.hasValidatedAccount()")
+    @DeleteMapping(value = "{opinionId}")
+    public ResponseEntity<String> deleteGameOpinion(@PathVariable Long opinionId) throws GameOpinionNotFoundException {
+        return ResponseEntity.ok(facade.deleteGameOpinion(opinionId));
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN','USER') and @userValidator.hasValidatedAccount()")
     @GetMapping("/{gameId}")
-    public ResponseEntity<List<GameOpinionDto>> gameOpinionsList(@PathVariable Long gameId) throws GameOpinionsListNotFoundException, GameNotFoundException {
+    public ResponseEntity<List<GameOpinionDto>> gameOpinionsList(@PathVariable Long gameId) throws GameNotFoundException {
         return ResponseEntity.ok(facade.fetchGameOpinionListForGivenGameId(gameId));
     }
 }
