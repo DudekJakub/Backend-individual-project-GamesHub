@@ -2,6 +2,8 @@ package com.gameshub.repository;
 
 import com.gameshub.domain.game.GameOpinion;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
@@ -12,9 +14,9 @@ import java.util.Optional;
 @Transactional
 public interface GameOpinionRepository extends JpaRepository<GameOpinion, Long> {
 
-    @Override
-    Optional<GameOpinion> findById(Long id);
+    @Query
+    List<GameOpinion> retrieveThreeLatestGameOpinionsForGame(@Param("GAME_ID") Long gameId);
 
     @Override
-    List<GameOpinion> findAll();
+    Optional<GameOpinion> findById(Long id);
 }
