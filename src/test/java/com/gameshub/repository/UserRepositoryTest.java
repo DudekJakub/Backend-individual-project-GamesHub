@@ -49,8 +49,6 @@ public class UserRepositoryTest {
     @Transactional
     void findAll() {
         //Given
-        userRepository.findAll().clear();
-
         User user = User.builder()
                 .firstname("test_name")
                 .lastname("test_lastName")
@@ -68,6 +66,7 @@ public class UserRepositoryTest {
                 .build();
 
         userRepository.save(user);
+        userRepository.save(user2);
 
         //When
         List<User> users = userRepository.findAll();
