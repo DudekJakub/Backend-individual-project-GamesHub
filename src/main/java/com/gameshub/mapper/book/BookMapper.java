@@ -46,7 +46,6 @@ public class BookMapper {
     }
 
     public GoogleBookDto mapToGoogleBookDto(final GoogleBookListDto googleBookListDto) {
-        System.out.println("MAPPER " + googleBookListDto.getItems().stream().findFirst().orElseThrow().getVolumeInfo().getTitle());
         return googleBookListDto.getItems().stream().findFirst().orElseThrow();
     }
 }

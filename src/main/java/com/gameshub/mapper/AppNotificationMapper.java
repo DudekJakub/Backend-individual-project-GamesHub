@@ -9,10 +9,7 @@ import com.gameshub.mapper.game.RawgGameNameMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -30,8 +27,8 @@ public class AppNotificationMapper {
                 .build();
     }
 
-    public Set<AppNewOpinionNotifDto> mapToNewOpinionNotifDtoLists(final Set<AppNotification> notifications, final List<GameOpinion> opinions) {
-        Set<AppNewOpinionNotifDto> opinionNotifDtos = new HashSet<>();
+    public LinkedHashSet<AppNewOpinionNotifDto> mapToNewOpinionNotifDtoLists(final Set<AppNotification> notifications, final List<GameOpinion> opinions) {
+        LinkedHashSet<AppNewOpinionNotifDto> opinionNotifDtos = new LinkedHashSet<>();
         List<AppNotification> notifs = new ArrayList<>(notifications);
 
         for (int i = 0; i < notifications.size(); i++) {
@@ -52,8 +49,8 @@ public class AppNotificationMapper {
                 .build();
     }
 
-    public Set<AppNewRatingNotifDto> mapToNewRatingNotifDtoLists(final Set<AppNotification> notifications, final List<GameRating> ratings) {
-        Set<AppNewRatingNotifDto> ratingNotifDtos = new HashSet<>();
+    public LinkedHashSet<AppNewRatingNotifDto> mapToNewRatingNotifDtoLists(final Set<AppNotification> notifications, final List<GameRating> ratings) {
+        LinkedHashSet<AppNewRatingNotifDto> ratingNotifDtos = new LinkedHashSet<>();
         List<AppNotification> notifs = new ArrayList<>(notifications);
 
         if (notifications.size() > 0 && ratings.size() > 0)
