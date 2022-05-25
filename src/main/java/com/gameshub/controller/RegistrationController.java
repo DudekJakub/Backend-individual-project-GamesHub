@@ -26,8 +26,7 @@ public class RegistrationController {
 
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     @GetMapping("/confirm/{loginName}")
-    public ResponseEntity<String> confirm(@PathVariable String loginName) throws AccessDeniedException, UserNotFoundException,
-                                                                                 UserAlreadyVerifiedException {
+    public ResponseEntity<String> confirm(@PathVariable String loginName) throws UserNotFoundException, UserAlreadyVerifiedException {
         return ResponseEntity.ok(registrationService.confirmAccount(userService.getUserByLoginName(loginName)));
     }
 }
