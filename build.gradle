@@ -53,6 +53,11 @@ dependencies {
 //     //N+1 HIBERNATE DETECTOR
 //     implementation 'com.yannbriancon:spring-hibernate-query-utils:2.0.0'
 
+    //h2_DATABASE
+    runtimeOnly('com.h2database:h2')
+    runtimeOnly 'mysql:mysql-connector-java'
+
+
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'mysql:mysql-connector-java'
 	annotationProcessor 'org.projectlombok:lombok'
