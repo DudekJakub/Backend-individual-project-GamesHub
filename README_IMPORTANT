@@ -1,0 +1,95 @@
+Cześć!
+
+SŁOWEM WSTĘPU:
+
+Nazywam się Jakub Dudek i chciałbym zaprezentować Ci swoją samodzielnie stworzoną aplikację REST API.
+Nazywa się ona GamesHub i jej głównym zadaniem jest dostarczenie użytkownikowi prostych i intuicyjnych narzędzi do przeglądania zarówno gier komputerowych (jak zresztą sama nazwa wskazuje), jak i powiązanych, być może interesujących książek, komiksów, poradników, czy art-booków. 
+
+Skąd zrodził się pomysł? Otóż przede wszystkim z tego, iż niewiele jest faktycznie pasujących do mojego gustu, lekkich i przejrzystych aplikacji, które pozwoliłyby w szybki, intuicyjny sposób wyszukać intersującą mnie grę oraz pozostawić za sobą jakiś symboliczny ślad w postaci opinii o danym tytule, czy osobistej oceny. ;)
+
+Dlatego też, pomimo niewystarczającej ilości czasu na dokończenie projektu, zamierzam dalej rozwijać swój pomysł. Dodać w przyszłości prosty front-end i zrealizować wszystkie mechanizmy, które przyszły mi do głowy w czasie 'klepania' kodu (a troszkę ich jest). 
+
+
+
+OPIS KONFIGURACJI PROJEKTU:
+
+Projekt wymaga do docelowego działania trzech elementów:
+
+1) Uzupełnienie tabeli GAMES rekordami podanymi w src/main/resources data.sql (jest to ok. 4300 rekordów, które stanowią trzon aplikacji) 
+
+2) Uzupełnienie bazy danych o 6 procedur / 6 funkcji / 5 eventów oraz 14 triggerów -> jak powyżej, wszystko jest przygotowane w odpowienim pliku, tutaj schema.sql
+
+W pliku src/main/resources/application.properties przygotowane zostały komendy do zainicjowania powyższych plików. 
+Myślę, że sprawdzać mój projekt będzie osoba, która ma kosmicznie wyższe kompetencje do wytłumaczenia całego procesu, więc na tym skończę temat. :)
+
+3) MAIL! Jest to bardzo istotna kwestia, ponieważ GitHub blokuje udostępnianie wrażliwych danych, takich jak hasła. Gmail automatycznie blokuje dostęp usług.
+Domyślnie aplikacja jest nastawiona na wykorzystanie GMAILa.
+
+
+
+OPIS APLIKACJI:
+
+Aplikacja zawiera:
+
+10 controllerów :
+-AppNotificationC
+-BookC
+-GameC
+-GameOpinionC
+-GameRatingC
+-GoogleBookC
+-RawgGameC
+-RegisrationC
+-StatisticC
+-UserC
+
+4 wzorce projektowe:
+-Observer
+-Strategy
+-Facade
+-Visitor
+
+4 różne maile dla user/admina (wariacja w HTMLu):
+-User stats mail
+-Admin stats mail
+-User confirmation mail
+-User newOpinion mail
+-User newRating mail
+
+3 sposoby notyfikacji usera:
+-FullEmailNotif
+-SimpleEmailNotif
+-InsideAppNotif
+
+3 zewnętrzne REST API:
+- RawgGame (trzon całej aplikacji) 
+- GoogleBook 
+- EmailVerificator 
+
++ 2 schedulery
++ 10 validatorów (przede wszystkim validacja po mailu-potwierdzającym-usera)
++ podpiętą bazę danych h2 dla testów
++ prostą implementację Spring Security
++ 6 sql procedur
++ 6 sql funkcji
++ 14 sql triggerów
++ 5 sql eventów
++ globalHttpErrorHandler
++ system zbierania statystyk nt. 'ruchu' w aplikacji
+
+Projekt na dzień 25.05.2022 godz. 23:41 w pełni buduje się za pomocą Gradle buildera.
+
+
+NA KONIEC:
+
+Czego mi zabrakło?:
+
+1) Większej ilości testów. Niestety brakło mi dnia na uzupełnienie tej jakże ważnej składowej aplikacji... Uzupełnienie testów będzie z pewnością priorytetem przed dalszym rozwojem aplikacji.
+
+2) Czasu na Front-End -> choć co prawda nie interesuje mnie on specjalnie, to jednak wizualizacja projektu choćby w najprostrzej formie to fajny plusik. 
+
+
+
+Z racji tego, że jest to ostatni dzień kursu Kodilla, chciałbym w tym miejscu podziękować przede wszystkim sobie, za wytrwałość podczas setek godzin nauki programowania przez te ostatnie pare miesięcy. Dzięki serdeczne również całej ekipie Kodilli, to była fajna przygoda. ;) 
+
+A dla przyszłych kursantów, którzy być może kiedyś się tutaj przyplątaja i przeczytają moje wypociny... wytrałości! Programowanie nie jest łatwe, ale jest za to całkiem logiczne. Good luck!
