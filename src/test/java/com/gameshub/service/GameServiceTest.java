@@ -1,7 +1,6 @@
 package com.gameshub.service;
 
 import com.gameshub.domain.game.Game;
-import com.gameshub.domain.game.GameOpinion;
 import com.gameshub.domain.user.AppUserNotificationStrategy;
 import com.gameshub.domain.user.AppUserRole;
 import com.gameshub.domain.user.User;
@@ -14,7 +13,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -56,10 +58,30 @@ class GameServiceTest {
 
     @Test
     void subscribeGame() {
+        //Given
+        when(gameRepository.save(gameForTest)).thenReturn(gameForTest);
+        when(userRepository.save(userForTest)).thenReturn(userForTest);
+
+        //When
+        gameService.subscribeGame(gameForTest, userForTest);
+
+        //Then
+        assertTrue(userForTest.getObservedGames().contains(gameForTest));
+        assertTrue(gameForTest.getObservers().contains(userForTest));
     }
 
     @Test
     void unsubscribeGame() {
+        //Given
+        when(gameRepository.save(gameForTest)).thenReturn(gameForTest);
+        when(userRepository.save(userForTest)).thenReturn(userForTest);
+
+        //When
+        gameService.unsubscribeGame(gameForTest, userForTest);
+
+        //Then
+        assertFalse(userForTest.getObservedGames().contains(gameForTest));
+        assertFalse(gameForTest.getObservers().contains(userForTest));
     }
 
     @Test
@@ -91,7 +113,7 @@ class GameServiceTest {
         //Then
         assertTrue(gameForTest.getUsersOwnedThisGame().contains(userForTest));
         assertTrue(userForTest.getGamesOwned().contains(gameForTest));
-        assertFalse(gameForTest.getUsersWantedToOwnThisGame().contains(userForTest));
+        assertFalse(gameForTest.getUsersWantedThisGame().contains(userForTest));
         assertFalse(userForTest.getGamesWantedToOwn().contains(gameForTest));
     }
 
@@ -105,7 +127,7 @@ class GameServiceTest {
         gameService.markGameAsWantedToOwn(gameForTest, userForTest);
 
         //Then
-        assertTrue(gameForTest.getUsersWantedToOwnThisGame().contains(userForTest));
+        assertTrue(gameForTest.getUsersWantedThisGame().contains(userForTest));
         assertTrue(userForTest.getGamesWantedToOwn().contains(gameForTest));
     }
 
@@ -120,46 +142,55 @@ class GameServiceTest {
         gameService.markGameAsWantedToOwn(gameForTest, userForTest);
 
         //Then
-        assertTrue(gameForTest.getUsersWantedToOwnThisGame().contains(userForTest));
+        assertTrue(gameForTest.getUsersWantedThisGame().contains(userForTest));
         assertTrue(userForTest.getGamesWantedToOwn().contains(gameForTest));
         assertFalse(gameForTest.getUsersOwnedThisGame().contains(userForTest));
         assertFalse(userForTest.getGamesOwned().contains(gameForTest));
     }
 
     @Test
-    void getAllGameObservers() {
+    void getGameObservers() {
+        //Given
+        gameService.subscribeGame(gameForTest, userForTest);
+
+        //When
+        Set<User> gameObservers = gameService.getGameObservers(gameForTest);
+
+        //Then
+        List<User> gameObserversList = new ArrayList<>(gameObservers);
+
+        assertTrue(gameObserversList.size() > 0);
+        assertTrue(userForTest.getObservedGames().contains(gameForTest));
+        assertEquals(gameObserversList.get(0).getLoginName(), userForTest.getLoginName());
+        assertEquals(gameObserversList.get(0).getFirstname(), userForTest.getFirstname());
+        assertEquals(gameObserversList.get(0).getLastname(), userForTest.getLastname());
     }
 
     @Test
-    void getThreeLatestGameOpinion() throws InterruptedException {
+    void getGamesUserOwns() {
         //Given
-        gameForTest.getGameOpinions().add(new GameOpinion(1L, "test_game1", "test_userLogin1", "test_opinion1", gameForTest, userForTest));
-        Thread.sleep(1000);
-        gameForTest.getGameOpinions().add(new GameOpinion(2L, "test_game2", "test_userLogin2", "test_opinion2", gameForTest, userForTest));
-        Thread.sleep(1000);
-        gameForTest.getGameOpinions().add(new GameOpinion(3L, "test_game3", "test_userLogin3", "test_opinion3", gameForTest, userForTest));
-        Thread.sleep(1000);
-        gameForTest.getGameOpinions().add(new GameOpinion(4L, "test_game4", "test_userLogin4", "test_opinion4", gameForTest, userForTest));
-
-        int opinionsSize = gameForTest.getGameOpinions().size();
-        GameOpinion oldestNotResultOpinion = gameForTest.getGameOpinions().get(opinionsSize-4);
-        GameOpinion oldestResultOpinion = gameForTest.getGameOpinions().get(opinionsSize-3);
-        GameOpinion middleResultOpinion = gameForTest.getGameOpinions().get(opinionsSize-2);
-        GameOpinion earliestResultOpinion = gameForTest.getGameOpinions().get(opinionsSize-1);
+        gameService.markGameAsOwned(gameForTest, userForTest);
 
         //When
-        List<GameOpinion> threeLatestOpinions = gameService.getThreeLatestGameOpinions(gameForTest);
+        List<Game> gamesUserOwns = new ArrayList<>(gameService.getGamesUserOwns(userForTest));
+
+        System.out.println(gamesUserOwns.size());
 
         //Then
-        threeLatestOpinions.forEach(gameOpinion -> {
-            System.out.println("\n" + gameOpinion.getOpinion());
-            System.out.println(gameOpinion.getPublicationDate());
-        });
+        assertTrue(gamesUserOwns.size() > 0);
+        assertTrue(gamesUserOwns.contains(gameForTest));
+    }
 
-        assertEquals(3, threeLatestOpinions.size());
-        assertEquals(oldestResultOpinion.getOpinion(), threeLatestOpinions.get(2).getOpinion());
-        assertEquals(middleResultOpinion.getOpinion(), threeLatestOpinions.get(1).getOpinion());
-        assertEquals(earliestResultOpinion.getOpinion(), threeLatestOpinions.get(0).getOpinion());
-        assertFalse(threeLatestOpinions.contains(oldestNotResultOpinion));
+    @Test
+    void getGamesUserWantsToOwn() {
+        //Given
+        gameService.markGameAsWantedToOwn(gameForTest, userForTest);
+
+        //When
+        List<Game> gamesUserWantsToOwn = new ArrayList<>(gameService.getGamesUserWantsToOwn(userForTest));
+
+        //Then
+        assertTrue(gamesUserWantsToOwn.size() > 0);
+        assertTrue(gamesUserWantsToOwn.contains(gameForTest));
     }
 }
