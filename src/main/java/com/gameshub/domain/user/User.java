@@ -85,6 +85,9 @@ public class User {
     @Column(name = "RATINGS_PER_DAY")
     private double ratingsPerDay;
 
+    @Column(name = "ACTIVITY_STATUS")
+    private String activityStatus;
+
     @OneToMany(mappedBy = "user")
     private final List<GameOpinion> gameOpinions = new ArrayList<>();
 
