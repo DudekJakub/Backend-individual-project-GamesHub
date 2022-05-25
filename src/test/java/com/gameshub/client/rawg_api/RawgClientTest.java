@@ -1,9 +1,10 @@
-package com.gameshub.rawg.client;
+package com.gameshub.client.rawg_api;
 
+import com.gameshub.client.RawgClient;
 import com.gameshub.domain.game.rawgGame.RawgGameDetailedDto;
 import com.gameshub.domain.game.rawgGame.RawgGameFromListDto;
 import com.gameshub.domain.game.rawgGame.RawgGameListDto;
-import com.gameshub.rawg.config.RawgConfig;
+import com.gameshub.client.config.RawgApiConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,7 +32,7 @@ class RawgClientTest {
     private RestTemplate restTemplate;
 
     @Mock
-    private RawgConfig rawgConfig;
+    private RawgApiConfig rawgApiConfig;
 
     private static final String TEST_URI = "https://test.com/";
     private static final String TEST_KEY = "test";
@@ -44,8 +45,8 @@ class RawgClientTest {
 
     @BeforeEach
     public void setWhenStatement() {
-        when(rawgConfig.getRawgApiEndpoint()).thenReturn(TEST_URI);
-        when(rawgConfig.getRawgAppKey()).thenReturn(TEST_KEY);
+        when(rawgApiConfig.getRawgApiEndpoint()).thenReturn(TEST_URI);
+        when(rawgApiConfig.getRawgAppKey()).thenReturn(TEST_KEY);
     }
 
     @Test
