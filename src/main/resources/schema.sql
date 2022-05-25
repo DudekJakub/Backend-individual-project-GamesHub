@@ -1,11 +1,3 @@
-create database GamesHub;
-
-create user 'gameshub_user' identified with MYSQL_NATIVE_PASSWORD by 'gameshub_password';
-
-GRANT ALL PRIVILEGES ON GamesHub.* to gameshub_user;
-
-USE GamesHub;
-
 SET GLOBAL EVENT_SCHEDULER=ON;
 
 
