@@ -6,9 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.NamedNativeQuery;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @NamedNativeQuery(name = "UsersStatistic.retrieveTheNewestStats",
@@ -22,6 +20,7 @@ import java.time.LocalDateTime;
 public class UsersStatistic {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID", unique = true)
     private Long id;
     private LocalDateTime addedDate = LocalDateTime.now();
