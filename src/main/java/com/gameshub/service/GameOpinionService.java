@@ -45,6 +45,7 @@ public class GameOpinionService implements GameObservable {
             newOpinion = gameOpinionMapper.mapToGameOpinion(gameOpinionDto);
             GameOpinion savedOpinion = gameOpinionRepository.save(newOpinion);
             LOGGER.info("New opinion to game with ID : " + gameId + " created successfully!");
+
             if (observers.size() > 0) {
                 LOGGER.info("[NEW GAME OPINION] Notifying observers for game with ID: " + gameId);
                 for (User observer : observers) {

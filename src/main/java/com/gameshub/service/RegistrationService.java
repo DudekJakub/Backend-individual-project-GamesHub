@@ -49,10 +49,7 @@ public class RegistrationService {
         return EMAIL_WITH_LINK_JUST_SEND;
     }
 
-    public String confirmAccount(final User user) throws AccessDeniedException, UserAlreadyVerifiedException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String login = authentication.getName();
-        if (!login.equals(user.getLoginName()) && !login.equalsIgnoreCase("admin")) throw new AccessDeniedException();
+    public String confirmAccount(final User user) throws UserAlreadyVerifiedException {
         if (user.isVerified()) throw new UserAlreadyVerifiedException();
 
         user.setVerified(true);

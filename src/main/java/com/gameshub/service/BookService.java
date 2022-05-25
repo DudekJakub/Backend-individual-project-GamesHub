@@ -2,6 +2,7 @@ package com.gameshub.service;
 
 import com.gameshub.domain.book.Book;
 import com.gameshub.domain.user.User;
+import com.gameshub.exception.BookAlreadyMemorizedException;
 import com.gameshub.exception.BookNotFoundException;
 import com.gameshub.exception.UserNotFoundException;
 import com.gameshub.exception.BookNotMemorizedException;
@@ -19,10 +20,13 @@ public class BookService {
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
 
-    public boolean addToUserMemorizedBookList(final Book book, final Long userId) throws UserNotFoundException {
+    public boolean addToUserMemorizedBookList(final Book book, final Long userId) throws UserNotFoundException, BookAlreadyMemorizedException {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-        user.getBooksMemorized().add(book);
-        userRepository.save(user);
+
+        if (user.getBooksMemorized().stream().noneMatch(userMemoBook -> userMemoBook.getGoogleId().equals(book.getGoogleId()))) {
+            user.getBooksMemorized().add(book);
+            userRepository.save(user);
+        } else throw new BookAlreadyMemorizedException();
 
         return true;
     }

@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -64,7 +65,7 @@ public class AppNotificationService {
         notifRepository.save(newNotif);
     }
 
-    public Set<AppNewOpinionNotifDto> getUserNewOpinionNotifs(final Long userId) throws UserNotFoundException {
+    public LinkedHashSet<AppNewOpinionNotifDto> getUserNewOpinionNotifs(final Long userId) throws UserNotFoundException {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         List<GameOpinion> opinions = new ArrayList<>();
         Set<AppNotification> opinionNotifs = user.getAppNotifications();
@@ -80,7 +81,7 @@ public class AppNotificationService {
         return notifMapper.mapToNewOpinionNotifDtoLists(opinionNotifs, opinions);
     }
 
-    public Set<AppNewRatingNotifDto> getUserNewRatingNotifs(final Long userId) throws UserNotFoundException {
+    public LinkedHashSet<AppNewRatingNotifDto> getUserNewRatingNotifs(final Long userId) throws UserNotFoundException {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         List<GameRating> ratings = new ArrayList<>();
         Set<AppNotification> ratingNotifs = user.getAppNotifications();
@@ -101,7 +102,9 @@ public class AppNotificationService {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 
         notifToDelete.getNotificatedUsers().remove(user);
+        user.getAppNotifications().remove(notifToDelete);
         notifRepository.save(notifToDelete);
+        userRepository.save(user);
 
         return true;
     }
