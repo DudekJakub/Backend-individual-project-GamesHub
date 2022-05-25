@@ -21,6 +21,7 @@ Projekt wymaga do docelowego działania trzech elementów:
 
 W pliku src/main/resources/application.properties przygotowane zostały komendy do zainicjowania powyższych plików. 
 Myślę, że sprawdzać mój projekt będzie osoba, która ma kosmicznie wyższe kompetencje do wytłumaczenia całego procesu, więc na tym skończę temat. :)
+*Dodatkowo (w razie problemów z wygenerowaniem skryptów DDL) zawarłem plik 'GamesHub_importantSchema z 'surowymi' skryptami DDL.
 
 3) MAIL! Jest to bardzo istotna kwestia, ponieważ GitHub blokuje udostępnianie wrażliwych danych, takich jak hasła. Gmail automatycznie blokuje dostęp usług.
 Domyślnie aplikacja jest nastawiona na wykorzystanie GMAILa.
