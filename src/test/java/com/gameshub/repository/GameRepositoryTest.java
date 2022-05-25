@@ -4,10 +4,11 @@ import com.gameshub.domain.game.Game;
 import com.gameshub.domain.game.rawgGame.RawgGameDetailedDto;
 import com.gameshub.exception.GameNotFoundException;
 import com.gameshub.mapper.game.GameMapper;
-import com.gameshub.rawg.client.RawgClient;
+import com.gameshub.client.RawgClient;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -15,70 +16,95 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@Transactional
 class GameRepositoryTest {
 
     @Autowired
-    private GameRepository repository;
+    private GameRepository gameRepository;
 
-    @Autowired
-    private RawgClient rawgClient;
+    @Test
+    void save() {
+        //Given
+        Game game = Game.builder()
+                .id(1L)
+                .name("test_name")
+                .build();
 
-    @Autowired
-    private GameMapper gameMapper;
+        //When
+        Game savedGame = gameRepository.save(game);
+
+        //Then
+        assertEquals(1L, savedGame.getId());
+        assertEquals("test_name", savedGame.getName());
+    }
 
     @Test
     void retrieveGamesWhereNameIsLike() {
         //Given
-        String givenName = "doom";
+        Game game = Game.builder()
+                .id(1L)
+                .name("test_name")
+                .build();
+
+        Game game2 = Game.builder()
+                .id(2L)
+                .name("test_name")
+                .build();
+
+        Game game3 = Game.builder()
+                .id(3L)
+                .name("helloWorld")
+                .build();
+
+        gameRepository.saveAll(List.of(game, game2, game3));
 
         //When
-        List<Long> resultList = repository.retrieveGamesWhereNameIsLike(givenName);
+        List<Long> resultList = gameRepository.retrieveGamesWhereNameIsLike("name");
 
         //Then
-        assertEquals(6, resultList.size());
+        assertEquals(2, resultList.size());
+        assertTrue(resultList.containsAll(List.of(1L, 2L)));
     }
 
     @Test
-    void findById() throws GameNotFoundException {
+    void findById()  {
         //Given
-        Long gameToFindId = 2728L;
+        Game game = Game.builder()
+                .id(1L)
+                .name("test_name")
+                .build();
+
+        Game savedGame = gameRepository.save(game);
 
         //When
-        Game game = repository.findById(gameToFindId).orElseThrow(GameNotFoundException::new);
+        Game resultGame = gameRepository.findById(savedGame.getId()).orElseThrow();
 
         //Then
-        assertEquals(2728L, game.getId());
-        assertEquals("tom-clancys-the-division", game.getName());
+        assertEquals(savedGame.getId(), resultGame.getId());
+        assertEquals(savedGame.getName(), resultGame.getName());
     }
 
     @Test
     void findAll() {
-        //When
-        List<Game> gamesFromDatabase = repository.findAll();
-
-        //Then
-        assertTrue(gamesFromDatabase.size() > 0);
-        assertEquals(4508, gamesFromDatabase.size());
-    }
-
-    @Test
-    @Transactional
-    void save() {
         //Given
-        RawgGameDetailedDto gameFromRawgDatabase = rawgClient.getGameById(1L).orElseThrow();
-        Game gameToPersist = gameMapper.mapToGame(gameFromRawgDatabase);
+        Game game = Game.builder()
+                .id(1L)
+                .name("test_name")
+                .build();
 
-        int allGameSizeBeforeSave = repository.findAll().size();
+        Game game2 = Game.builder()
+                .id(2L)
+                .name("test_name")
+                .build();
+
+        gameRepository.saveAll(List.of(game, game2));
 
         //When
-        Game game = repository.save(gameToPersist);
-        Long id = game.getId();
+        List<Game> resultList = gameRepository.findAll();
 
         //Then
-        int allGameSizeAfterSave = repository.findAll().size();
-
-        assertEquals(allGameSizeAfterSave, allGameSizeBeforeSave + 1);
-        assertEquals(1L, id);
-        assertEquals("D/Generation HD", game.getName());
+        assertEquals(2, resultList.size());
     }
+
+
 }

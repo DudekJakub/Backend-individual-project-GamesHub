@@ -3,82 +3,146 @@ package com.gameshub.repository;
 import com.gameshub.domain.user.AppUserRole;
 import com.gameshub.domain.user.User;
 import com.gameshub.exception.UserNotFoundException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
+@Transactional
 public class UserRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
 
     @Test
-    void findById() throws UserNotFoundException {
+    @Transactional
+    void save() {
         //Given
-        Long userId = 5L;
+        User user = User.builder()
+                        .firstname("test_name")
+                        .lastname("test_lastName")
+                        .email("test_email")
+                        .loginName("test_loginName")
+                        .appUserRole(AppUserRole.USER)
+                        .build();
 
         //When
-        User userFromDatabase = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        User savedUser = userRepository.save(user);
 
         //Then
-        assertNotNull(userFromDatabase);
-        assertEquals("admin", userFromDatabase.getLoginName());
-        assertEquals(5L, userFromDatabase.getId());
-        assertEquals("jakubjavaprogrammer@gmail.com", userFromDatabase.getEmail());
-        assertEquals(AppUserRole.ADMIN, userFromDatabase.getAppUserRole());
+        assertNotNull(savedUser);
+        assertNotNull(savedUser.getId());
+        assertEquals("test_name", savedUser.getFirstname());
+        assertEquals("test_lastName", savedUser.getLastname());
+        assertEquals("test_email", savedUser.getEmail());
+        assertEquals("test_loginName", savedUser.getLoginName());
     }
 
     @Test
-    void findByEmail() throws UserNotFoundException {
+    @Transactional
+    void findAll() {
         //Given
-        String email = "jakubjavaprogrammer@gmail.com";
+        userRepository.findAll().clear();
+
+        User user = User.builder()
+                .firstname("test_name")
+                .lastname("test_lastName")
+                .email("test_email")
+                .loginName("test_loginName")
+                .appUserRole(AppUserRole.USER)
+                .build();
+
+        User user2 = User.builder()
+                .firstname("test_name2")
+                .lastname("test_lastName2")
+                .email("test_email2")
+                .loginName("test_loginName2")
+                .appUserRole(AppUserRole.USER)
+                .build();
+
+        userRepository.save(user);
 
         //When
-        User userFromDatabase = userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
+        List<User> users = userRepository.findAll();
 
         //Then
-        assertNotNull(userFromDatabase);
-        assertEquals("admin", userFromDatabase.getLoginName());
-        assertEquals(email, userFromDatabase.getEmail());
-        assertEquals(AppUserRole.ADMIN, userFromDatabase.getAppUserRole());
+        assertEquals(2, users.size());
+        assertNotNull(users.get(0));
+        assertNotNull(users.get(1));
+        assertEquals(user.getId(), users.get(0).getId());
+        assertEquals(user2.getId(), users.get(1).getId());
     }
 
     @Test
-    void findByLoginName() throws UserNotFoundException {
+    @Transactional
+    void findById() {
         //Given
-        String loginName = "admin";
+        User user = User.builder()
+                .firstname("test_name")
+                .lastname("test_lastName")
+                .email("test_email")
+                .loginName("test_loginName")
+                .appUserRole(AppUserRole.USER)
+                .build();
+
+        User savedUser = userRepository.save(user);
 
         //When
-        User userFromDatabase = userRepository.findByLoginName(loginName).orElseThrow(UserNotFoundException::new);
+        User resultUser = userRepository.findById(savedUser.getId()).orElseThrow();
 
         //Then
-        assertNotNull(userFromDatabase);
-        assertEquals("admin", userFromDatabase.getLoginName());
-        assertEquals(AppUserRole.ADMIN, userFromDatabase.getAppUserRole());
+        assertEquals(savedUser.getId(), resultUser.getId());
+        assertEquals(savedUser.getFirstname(), resultUser.getFirstname());
     }
 
     @Test
-    void findAll() throws UserNotFoundException {
+    @Transactional
+    void findByEmail() {
         //Given
-        User admin = userRepository.findByLoginName("admin").orElseThrow(UserNotFoundException::new);
+        User user = User.builder()
+                .firstname("test_name")
+                .lastname("test_lastName")
+                .email("test_email")
+                .loginName("test_loginName")
+                .appUserRole(AppUserRole.USER)
+                .build();
 
-        // When
-        List<User> usersFromDatabase = userRepository.findAll();
-        var adminFromDatabase = usersFromDatabase.get(1);
+        User savedUser = userRepository.save(user);
 
-        /* Test of User's equals & hashCode contract: **/
-        System.out.println("admin hashcode = " + admin.hashCode()
-                           + " | usersFromDatabase.get(1) hashcode = " + adminFromDatabase.hashCode()
-                           + " -> are hashCodes equal = " + admin.equals(adminFromDatabase));
+        //When
+        User resultUser = userRepository.findByEmail(savedUser.getEmail()).orElseThrow();
 
         //Then
-        assertNotNull(usersFromDatabase);
-        assertTrue(usersFromDatabase.size() > 0);
-        assertTrue(usersFromDatabase.contains(admin));
+        assertEquals(savedUser.getEmail(), resultUser.getEmail());
     }
+
+    @Test
+    @Transactional
+    void findByLoginName() {
+        //Given
+        User user = User.builder()
+                .firstname("test_name")
+                .lastname("test_lastName")
+                .email("test_email")
+                .loginName("test_loginName")
+                .appUserRole(AppUserRole.USER)
+                .build();
+
+        User savedUser = userRepository.save(user);
+
+        //When
+        User resultUser = userRepository.findByLoginName(savedUser.getLoginName()).orElseThrow();
+
+        //Then
+        assertEquals(savedUser.getLoginName(), resultUser.getLoginName());
+    }
+
+
 }

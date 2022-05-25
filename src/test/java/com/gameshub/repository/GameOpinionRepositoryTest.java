@@ -13,54 +13,92 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import javax.transaction.Transactional;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@Transactional
 public class GameOpinionRepositoryTest {
 
     @Autowired
     private GameOpinionRepository gameOpinionRepository;
 
-    private Game gameForTest = null;
-    private User userForTest = null;
-
-    @BeforeEach
-    void setPreliminaryData() {
-        userForTest = User.builder()
-                .loginName("test_loginName")
-                .appUserRole(AppUserRole.USER)
-                .notificationStrategy(AppUserNotificationStrategy.FULL_EMAIL_NOTIFICATION)
-                .email("test_email")
-                .firstname("test_firstname")
-                .lastname("test_lastname")
-                .active(true)
-                .verified(true)
-                .build();
-
-        gameForTest = Game.builder()
-                .id(1L)
-                .name("test_game")
-                .build();
-    }
-
     @Test
     @Transactional
-    void saveEntity() {
+    void save() {
         //Given
-        int opinionsListSizeBeforePersistNewOpinion = gameOpinionRepository.findAll().size();
-
         GameOpinion newOpinion = GameOpinion.builder()
                 .opinion("test_opinion")
-                .gameName(gameForTest.getName())
-                .userLogin(userForTest.getLoginName())
-                .game(gameForTest)
-                .user(userForTest)
+                .game(Game.builder()
+                        .id(1L)
+                        .name("test_game_name")
+                        .build())
+                .gameName("test_game_name")
+                .userLogin("test_userLogin")
                 .build();
 
         //When
-        gameOpinionRepository.save(newOpinion);
+        GameOpinion savedOpinion = gameOpinionRepository.save(newOpinion);
 
         //Then
-        assertEquals(opinionsListSizeBeforePersistNewOpinion + 1, gameOpinionRepository.findAll().size());
+        assertEquals(newOpinion.getId(), savedOpinion.getId());
+        assertEquals(newOpinion.getOpinion(), savedOpinion.getOpinion());
+        assertEquals(newOpinion.getGame(), savedOpinion.getGame());
+    }
+
+    @Test
+    void findById()  {
+        //Given
+        GameOpinion newOpinion = GameOpinion.builder()
+                .opinion("test_opinion")
+                .game(Game.builder()
+                        .id(1L)
+                        .name("test_game_name")
+                        .build())
+                .gameName("test_game_name")
+                .userLogin("test_userLogin")
+                .build();
+
+        GameOpinion savedOpinion = gameOpinionRepository.save(newOpinion);
+
+        //When
+        GameOpinion resultGameOpinion = gameOpinionRepository.findById(savedOpinion.getId()).orElseThrow();
+
+        //Then
+        assertEquals(savedOpinion.getId(), resultGameOpinion.getId());
+        assertEquals(savedOpinion.getGame(), resultGameOpinion.getGame());
+    }
+
+    @Test
+    void findAll() {
+        //Given
+        GameOpinion newOpinion = GameOpinion.builder()
+                .opinion("test_opinion")
+                .game(Game.builder()
+                        .id(1L)
+                        .name("test_game_name")
+                        .build())
+                .gameName("test_game_name")
+                .userLogin("test_userLogin")
+                .build();
+
+        GameOpinion newOpinion2 = GameOpinion.builder()
+                .opinion("test_opinion2")
+                .game(Game.builder()
+                        .id(2L)
+                        .name("test_game_name2")
+                        .build())
+                .gameName("test_game_name2")
+                .userLogin("test_userLogin2")
+                .build();
+
+        gameOpinionRepository.saveAll(List.of(newOpinion, newOpinion2));
+
+        //When
+        List<GameOpinion> resultList = gameOpinionRepository.findAll();
+
+        //Then
+        assertEquals(2, resultList.size());
     }
 }
