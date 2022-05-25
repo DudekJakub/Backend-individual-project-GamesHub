@@ -1,6 +1,8 @@
 package com.gameshub;
 
 import com.gameshub.domain.game.Game;
+import com.gameshub.domain.user.AppUserNotificationStrategy;
+import com.gameshub.domain.user.AppUserRole;
 import com.gameshub.domain.user.User;
 import com.gameshub.exception.GameNotFoundException;
 import com.gameshub.exception.UserNotFoundException;
@@ -11,56 +13,71 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
 public class EqualsAndHashCodesTestSuite {
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private GameRepository gameRepository;
-
     @Test
-    void userEqualsAndHashCodeContract() throws UserNotFoundException {
+    void userEqualsAndHashCodeContract() {
         //Given
-        User admin1_1 = userRepository.findById(5L).orElseThrow(UserNotFoundException::new);
-        User admin1_2 = userRepository.findAll()
-                .stream()
-                .filter(user -> user.getLoginName().equals("admin"))
-                .findAny()
-                .orElseThrow(UserNotFoundException::new);
+        User userForTest1 = User.builder()
+                .id(1L)
+                .loginName("test")
+                .appUserRole(AppUserRole.USER)
+                .notificationStrategy(AppUserNotificationStrategy.FULL_EMAIL_NOTIFICATION)
+                .email("test_email")
+                .password("test_password")
+                .firstname("test_firstname")
+                .lastname("test_lastname")
+                .active(false)
+                .verified(true)
+                .build();
+
+        User userForTest2 = User.builder()
+                .id(1L)
+                .loginName("test")
+                .appUserRole(AppUserRole.USER)
+                .notificationStrategy(AppUserNotificationStrategy.FULL_EMAIL_NOTIFICATION)
+                .email("test_email")
+                .password("test_password")
+                .firstname("test_firstname")
+                .lastname("test_lastname")
+                .active(false)
+                .verified(true)
+                .build();
 
         //When
-        boolean areHashCodesEqual = admin1_1.hashCode() == admin1_2.hashCode();
-        boolean areObjectsEqual = admin1_1.equals(admin1_2);
+        boolean areHashCodesEqual = userForTest1.hashCode() == userForTest2.hashCode();
+        boolean areObjectsEqual = userForTest1.equals(userForTest2);
 
         //Then
-        assertNotNull(admin1_1);
-        assertNotNull(admin1_2);
-        assertEquals(admin1_1.getId(), admin1_2.getId());
-        assertEquals(admin1_1.getLoginName(), admin1_2.getLoginName());
+        assertNotNull(userForTest1);
+        assertNotNull(userForTest1);
+        assertEquals(userForTest1.getId(), userForTest2.getId());
+        assertEquals(userForTest1.getLoginName(), userForTest2.getLoginName());
         assertTrue(areHashCodesEqual);
         assertTrue(areObjectsEqual);
     }
 
     @Test
-    void gameEqualsAndHashCodeContract() throws GameNotFoundException {
+    void gameEqualsAndHashCodeContract() {
         //Given
-        Game game1_1 = gameRepository.findById(23598L).orElseThrow(GameNotFoundException::new);
-        Game game1_2 = gameRepository.findAll()
-                .stream()
-                .filter(game -> game.getId() == 23598L)
-                .findAny()
-                .orElseThrow(GameNotFoundException::new);
+        Game gameForTest1 = Game.builder()
+                .id(1L)
+                .name("test_game")
+                .build();
+
+        Game gameForTest2 = Game.builder()
+                .id(1L)
+                .name("test_game")
+                .build();
 
         //When
-        boolean areHashCodesEqual = game1_1.hashCode() == game1_2.hashCode();
-        boolean areObjectsEqual = game1_1.equals(game1_2);
+        boolean areHashCodesEqual = gameForTest1.hashCode() == gameForTest2.hashCode();
+        boolean areObjectsEqual = gameForTest1.equals(gameForTest2);
 
         //Then
-        assertNotNull(game1_1);
-        assertNotNull(game1_2);
-        assertEquals(game1_1.getId(), game1_2.getId());
+        assertNotNull(gameForTest1);
+        assertNotNull(gameForTest1);
+        assertEquals(gameForTest1.getId(), gameForTest2.getId());
         assertTrue(areHashCodesEqual);
         assertTrue(areObjectsEqual);
     }
