@@ -43,12 +43,12 @@ public class GameRatingFacade {
         return gameRatingMapper.mapToGameRatingDto(newRating);
     }
 
-    public GameRatingDto updateGameRating(final double updatedRatingValue, final Long ratingId) throws UserNotFoundException, GameDataUpdateAccessDeniedException,
-                                                                                                       GameRatingNotFoundException, GameRatingOutOfRangeException {
+    public GameRatingDto updateGameRating(final double updatedRatingValue, final Long userId, final Long ratingId) throws UserNotFoundException, GameDataUpdateAccessDeniedException,
+                                                                                                                          GameRatingNotFoundException, GameRatingOutOfRangeException {
         GameRating gameRatingToUpdate = gameRatingRepository.findById(ratingId).orElseThrow(GameRatingNotFoundException::new);
 
         LOGGER.info("Updating rating with ID: " + ratingId);
-        gameRatingValidator.validateDataBelongingToUser(gameRatingToUpdate, UPDATE_GAME_RATING);
+        gameRatingValidator.validateDataBelongingToUser(gameRatingToUpdate, userId, UPDATE_GAME_RATING);
         gameRatingValidator.validateNewRatingRange(updatedRatingValue, UPDATE_GAME_RATING);
         GameRating updatedGameRating = gameRatingService.updateGameRating(updatedRatingValue, gameRatingToUpdate);
         LOGGER.info("Successfully updated rating with ID: " + ratingId);

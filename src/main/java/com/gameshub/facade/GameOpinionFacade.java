@@ -45,14 +45,14 @@ public class GameOpinionFacade {
         return gameOpinionMapper.mapToGameOpinionDto(newOpinion);
     }
 
-    public GameOpinionDto updateGameOpinion(String updatedText, final Long opinionId) throws GameDataUpdateAccessDeniedException, GameOpinionNotFoundException,
-                                                                                             GameOpinionLengthTooLongException, GameOpinionUpdateTimeExpiredException,
-                                                                                             UserNotFoundException {
+    public GameOpinionDto updateGameOpinion(String updatedText, final Long userId, final Long opinionId) throws GameDataUpdateAccessDeniedException, GameOpinionNotFoundException,
+                                                                                                                GameOpinionLengthTooLongException, GameOpinionUpdateTimeExpiredException,
+                                                                                                                UserNotFoundException {
         GameOpinion gameOpinionToUpdate = gameOpinionRepository.findById(opinionId).orElseThrow(GameOpinionNotFoundException::new);
 
         LOGGER.info("Updating opinion with ID: " + opinionId);
 
-        gameOpinionValidator.validateDataBelongingToUser(gameOpinionToUpdate, UPDATE_GAME_OPINION);
+        gameOpinionValidator.validateDataBelongingToUser(gameOpinionToUpdate, userId, UPDATE_GAME_OPINION);
         gameOpinionValidator.validateOpinionForPublicationDate(gameOpinionToUpdate, UPDATE_GAME_OPINION);
         gameOpinionValidator.validateOpinionLength(updatedText, UPDATE_GAME_OPINION);
 

@@ -3,6 +3,7 @@ package com.gameshub.facade;
 import com.gameshub.domain.book.Book;
 import com.gameshub.domain.book.googleBook.GoogleBookDto;
 import com.gameshub.domain.user.UserOpenDto;
+import com.gameshub.exception.BookAlreadyMemorizedException;
 import com.gameshub.exception.BookNotFoundException;
 import com.gameshub.exception.GoogleBookNotFoundException;
 import com.gameshub.exception.UserNotFoundException;
@@ -33,10 +34,9 @@ public class BookFacade {
 
     private final BookValidator bookValidator;
 
-    public boolean persistAndAddToUserMemorizedBookList(final String googleBookId, final Long userId) throws UserNotFoundException, GoogleBookNotFoundException {
+    public boolean persistAndAddToUserMemorizedBookList(final String googleBookId, final Long userId) throws UserNotFoundException, GoogleBookNotFoundException,
+                                                                                                             BookAlreadyMemorizedException {
         GoogleBookDto bookToMemorized = bookMapper.mapToGoogleBookDto(googleBookService.retrieveGoogleBookById(googleBookId));
-
-        System.out.println(bookToMemorized);
 
         Book mappedBook = bookMapper.mapToBook(bookToMemorized);
 
