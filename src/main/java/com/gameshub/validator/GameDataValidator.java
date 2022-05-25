@@ -24,14 +24,12 @@ public class GameDataValidator {
         this.userRepository = userRepository;
     }
 
-    public void validateDataBelongingToUser(final GameDataSource gameDataSource, final String operationName) throws UserNotFoundException, GameDataUpdateAccessDeniedException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentLoggedUserName = authentication.getName();
-        User currentLoggedUser = userRepository.findByLoginName(currentLoggedUserName).orElseThrow(UserNotFoundException::new);
-        long currentLoggedUserId = currentLoggedUser.getId();
+    public void validateDataBelongingToUser(final GameDataSource gameDataSource, final Long userId, final String operationName) throws UserNotFoundException, GameDataUpdateAccessDeniedException {
+        User userToCheck = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        long user_id = userToCheck.getId();
         long gameDataSourceUserId = gameDataSource.getUser().getId();
 
-        if (!(gameDataSourceUserId == currentLoggedUserId)) {
+        if (!(gameDataSourceUserId == user_id)) {
             LOGGER.error(operationName + "Validation failed! Given game's " + getDataType(gameDataSource) + " does not belong to currently logged user!");
             throw new GameDataUpdateAccessDeniedException();
         }

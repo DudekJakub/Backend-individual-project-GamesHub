@@ -14,7 +14,7 @@ public class PasswordEqualityValidator implements BiPredicate<String, String> {
 
     @Override
     public boolean test(final String password, final String repeatPassword) {
-        return password.equals(repeatPassword);
+        return repeatPassword.equals(password);
     }
 
     public void validate(final String password, final String repeatPassword, final String operationName) throws PasswordNotMatchException {
