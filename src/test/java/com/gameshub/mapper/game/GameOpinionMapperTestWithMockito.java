@@ -17,6 +17,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
@@ -111,5 +113,31 @@ class GameOpinionMapperTestWithMockito {
         assertEquals("test_opinion", mappedResult.getOpinion());
         assertEquals(32L, mappedResult.getGameId());
         assertEquals(5L, mappedResult.getUserId());
+    }
+
+
+    @Test
+    void mapToListOfGameOpinionDtos() {
+        //Given
+        List<GameOpinion> listToMap = List.of(
+                GameOpinion.builder()
+                .id(1L)
+                .gameName("destiny-2")
+                .userLogin("admin")
+                .opinion("test_opinion")
+                .game(game)
+                .user(user)
+                .build());
+
+        //When
+        List<GameOpinionDto> resultList = gameOpinionMapper.mapToListOfGameOpinionDtos(listToMap);
+
+        //Then
+        assertNotNull(resultList.get(0));
+        assertEquals(listToMap.get(0).getId(), resultList.get(0).getId());
+        assertEquals(listToMap.get(0).getOpinion(), resultList.get(0).getOpinion());
+        assertEquals(listToMap.get(0).getGame().getId(), resultList.get(0).getGameId());
+        assertEquals(listToMap.get(0).getUser().getId(), resultList.get(0).getUserId());
+        assertEquals(listToMap.get(0).getPublicationDate(), resultList.get(0).getPublicationDate());
     }
 }

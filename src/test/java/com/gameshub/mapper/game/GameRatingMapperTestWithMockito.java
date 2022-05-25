@@ -17,6 +17,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
+
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -67,7 +69,6 @@ public class GameRatingMapperTestWithMockito {
         //Given
         GameRatingDto gameRatingDto = GameRatingDto.builder()
                 .id(1L)
-                .gameName("destiny-2")
                 .rating(5)
                 .gameId(32L)
                 .userId(5L)
@@ -109,9 +110,32 @@ public class GameRatingMapperTestWithMockito {
         //Then
         assertNotNull(mappedResult);
         assertNotNull(mappedResult.getPublicationDate());
-        assertEquals("destiny-2", mappedResult.getGameName());
         assertEquals(5, mappedResult.getRating());
         assertEquals(32L, mappedResult.getGameId());
         assertEquals(5L, mappedResult.getUserId());
+    }
+
+    @Test
+    void mapToListOfGameRatingDtos() {
+        //Given
+        List<GameRating> listToMap = List.of(
+                GameRating.builder()
+                        .id(1L)
+                        .gameName("destiny-2")
+                        .rating(5)
+                        .game(game)
+                        .user(user)
+                        .build());
+
+        //When
+        List<GameRatingDto> resultList = gameRatingMapper.mapToListOfGameRatingDtos(listToMap);
+
+        //Then
+        assertNotNull(resultList.get(0));
+        assertEquals(listToMap.get(0).getId(), resultList.get(0).getId());
+        assertEquals(listToMap.get(0).getRating(), resultList.get(0).getRating());
+        assertEquals(listToMap.get(0).getGame().getId(), resultList.get(0).getGameId());
+        assertEquals(listToMap.get(0).getUser().getId(), resultList.get(0).getUserId());
+        assertEquals(listToMap.get(0).getPublicationDate(), resultList.get(0).getPublicationDate());
     }
 }
