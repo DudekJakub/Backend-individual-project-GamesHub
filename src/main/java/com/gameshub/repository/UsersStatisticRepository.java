@@ -1,6 +1,5 @@
 package com.gameshub.repository;
 
-import com.gameshub.domain.statistics.GamesStatistic;
 import com.gameshub.domain.statistics.UsersStatistic;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
