@@ -6,11 +6,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest
 class PasswordEqualityValidatorTest {
 
-    @Autowired
-    private PasswordEqualityValidator passValidator;
+    private PasswordEqualityValidator passValidator = new PasswordEqualityValidator();
 
     @Test
     void testBiPredicateTestMethod() {
