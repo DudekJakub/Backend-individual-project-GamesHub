@@ -1,10 +1,7 @@
 package com.gameshub.controller;
 
 import com.gameshub.domain.user.UserOpenDto;
-import com.gameshub.exception.BookNotFoundException;
-import com.gameshub.exception.GoogleBookNotFoundException;
-import com.gameshub.exception.UserNotFoundException;
-import com.gameshub.exception.BookNotMemorizedException;
+import com.gameshub.exception.*;
 import com.gameshub.facade.BookFacade;
 import com.gameshub.service.BookService;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +27,7 @@ public class BookController {
 
     @PreAuthorize("hasAnyAuthority('ADMIN','USER') and @userValidator.hasValidatedAccount()")
     @PostMapping("/{googleBookId}/{userId}")
-    public ResponseEntity<Boolean> addToUserMemorizedBookList(@PathVariable String googleBookId, @PathVariable Long userId) throws UserNotFoundException, GoogleBookNotFoundException {
+    public ResponseEntity<Boolean> addToUserMemorizedBookList(@PathVariable String googleBookId, @PathVariable Long userId) throws UserNotFoundException, GoogleBookNotFoundException, BookAlreadyMemorizedException {
         return ResponseEntity.ok(bookFacade.persistAndAddToUserMemorizedBookList(googleBookId, userId));
     }
 

@@ -28,9 +28,9 @@ public class GameRatingController {
 
     @PreAuthorize("hasAnyAuthority('ADMIN','USER') and @userValidator.hasValidatedAccount()")
     @PatchMapping(value = "{ratingId}")
-    public ResponseEntity<GameRatingDto> updateGameRating(@RequestParam double updatedRating, @PathVariable Long ratingId) throws UserNotFoundException, GameRatingNotFoundException,
-                                                                                                                                  GameRatingOutOfRangeException, GameDataUpdateAccessDeniedException  {
-        return ResponseEntity.ok(facade.updateGameRating(updatedRating, ratingId));
+    public ResponseEntity<GameRatingDto> updateGameRating(@RequestParam double updatedRating, @PathVariable Long ratingId, @RequestParam Long userId) throws UserNotFoundException, GameRatingNotFoundException,
+                                                                                                                                                             GameRatingOutOfRangeException, GameDataUpdateAccessDeniedException  {
+        return ResponseEntity.ok(facade.updateGameRating(updatedRating, userId, ratingId));
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN','USER') and @userValidator.hasValidatedAccount()")

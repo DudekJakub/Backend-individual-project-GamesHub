@@ -124,4 +124,9 @@ public class GlobalHttpErrorHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleBookNotMemorizedException(BookNotMemorizedException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(BookAlreadyMemorizedException.class)
+    public ResponseEntity<Object> handleBookAlreadyMemorizedException(BookAlreadyMemorizedException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+    }
 }
