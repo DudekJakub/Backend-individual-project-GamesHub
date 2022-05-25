@@ -14,7 +14,7 @@ import java.util.List;
 @Component
 public class EmailUserBuilder extends EmailBuilder {
 
-    private static final String MAIN_PAGE_AFTER_ACC_CONFIRMATION = "http://localhost:8080/v1/registration/confirm/";
+    private static final String MAIN_PAGE_AFTER_ACC_CONFIRMATION = "http://localhost:8080/v1/registrations/confirm/";
     private static final String USER_ACCOUNT_PAGE = "http://localhost:8080/v1/users/restricted/";
     private static final String HTTP_CONFIRMATION_MAIL = "mail/created-account-confirmation-email";
     private static final String HTTP_SUMMARY_MAIL = "mail/user-summary-email";
