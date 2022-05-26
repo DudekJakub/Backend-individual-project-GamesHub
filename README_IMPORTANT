@@ -30,6 +30,10 @@ c) Mogę jednocześnie dołączyć do tabeli funkcjonalności dla użytkowników
 
 *slug-name to stringowy identyfikator gier w rawgApi. Lokalnie konwertowany z 'iron-maiden' na Iron Maiden.
 
+Minusy:
+a) baza danych jest w fazie przedrozwojowej, wiec ilość gier do bezpośredniego wyszukania jest mocno ograniczona. 
+Z tego też powodu, następnym krokiem będzie samo-uzupełnianie się bazy o nieobecne w niej rekordy.
+
 3) MAIL! Jest to bardzo istotna kwestia, ponieważ GitHub blokuje udostępnianie wrażliwych danych, takich jak hasła. Gmail automatycznie blokuje dostęp usług.
 Domyślnie aplikacja jest nastawiona na wykorzystanie GMAILa.
 
