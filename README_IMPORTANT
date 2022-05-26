@@ -23,6 +23,13 @@ W pliku src/main/resources/application.properties przygotowane zostały komendy 
 Myślę, że sprawdzać mój projekt będzie osoba, która ma kosmicznie wyższe kompetencje do wytłumaczenia całego procesu, więc na tym skończę temat. :)
 *Dodatkowo (w razie problemów z wygenerowaniem skryptów DDL) zawarłem plik 'GamesHub_importantSchema z 'surowymi' skryptami DDL.
 
+Dlaczego 4300 rekordów? Są 3 powody:
+a) Przechowując w bazie danych podstawowe informacje zawierające ID oraz tzw. *slug-name, jestem w stanie bezpośrednio odpytywać zewnętrzne API o dostarczenie konkretnego JSONa z grą.
+b) Powyższe rozwiązanie jest również znacznie szybsze, niż filtrowanie wielu stron zawierających wiele mniej lub bardziej dopasowanych gier (filtrowanie nie działało niestety wystarczająco dobrze)
+c) Mogę jednocześnie dołączyć do tabeli funkcjonalności dla użytkowników. Tworzę w ten sposób swojego rodzaju wrappera dla zewnętrznego API.
+
+*slug-name to stringowy identyfikator gier w rawgApi. Lokalnie konwertowany z 'iron-maiden' na Iron Maiden.
+
 3) MAIL! Jest to bardzo istotna kwestia, ponieważ GitHub blokuje udostępnianie wrażliwych danych, takich jak hasła. Gmail automatycznie blokuje dostęp usług.
 Domyślnie aplikacja jest nastawiona na wykorzystanie GMAILa.
 
